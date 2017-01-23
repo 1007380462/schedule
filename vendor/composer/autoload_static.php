@@ -85,8 +85,10 @@ class ComposerStaticInitc6fcfa1273ccb4b81bb991936c21b9fa
         ),
         'C' => 
         array (
+            'Cron\\' => 5,
             'ClassPreloader\\' => 15,
             'Carbon\\' => 7,
+            'Caffeinated\\Modules\\' => 20,
         ),
         'A' => 
         array (
@@ -221,6 +223,10 @@ class ComposerStaticInitc6fcfa1273ccb4b81bb991936c21b9fa
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
+        'Cron\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mtdowling/cron-expression/src/Cron',
+        ),
         'ClassPreloader\\' => 
         array (
             0 => __DIR__ . '/..' . '/classpreloader/classpreloader/src',
@@ -228,6 +234,10 @@ class ComposerStaticInitc6fcfa1273ccb4b81bb991936c21b9fa
         'Carbon\\' => 
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
+        ),
+        'Caffeinated\\Modules\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/caffeinated/modules/src',
         ),
         'App\\' => 
         array (
@@ -268,13 +278,6 @@ class ComposerStaticInitc6fcfa1273ccb4b81bb991936c21b9fa
                 0 => __DIR__ . '/..' . '/doctrine/inflector/lib',
             ),
         ),
-        'C' => 
-        array (
-            'Cron' => 
-            array (
-                0 => __DIR__ . '/..' . '/mtdowling/cron-expression/src',
-            ),
-        ),
     );
 
     public static $classMap = array (
@@ -285,6 +288,7 @@ class ComposerStaticInitc6fcfa1273ccb4b81bb991936c21b9fa
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
         'App\\Http\\Controllers\\Auth\\ResetPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ResetPasswordController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
@@ -295,8 +299,44 @@ class ComposerStaticInitc6fcfa1273ccb4b81bb991936c21b9fa
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
+        'Caffeinated\\Modules\\Console\\Commands\\ModuleDisableCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Commands/ModuleDisableCommand.php',
+        'Caffeinated\\Modules\\Console\\Commands\\ModuleEnableCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Commands/ModuleEnableCommand.php',
+        'Caffeinated\\Modules\\Console\\Commands\\ModuleListCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Commands/ModuleListCommand.php',
+        'Caffeinated\\Modules\\Console\\Commands\\ModuleMigrateCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Commands/ModuleMigrateCommand.php',
+        'Caffeinated\\Modules\\Console\\Commands\\ModuleMigrateRefreshCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Commands/ModuleMigrateRefreshCommand.php',
+        'Caffeinated\\Modules\\Console\\Commands\\ModuleMigrateResetCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Commands/ModuleMigrateResetCommand.php',
+        'Caffeinated\\Modules\\Console\\Commands\\ModuleMigrateRollbackCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Commands/ModuleMigrateRollbackCommand.php',
+        'Caffeinated\\Modules\\Console\\Commands\\ModuleOptimizeCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Commands/ModuleOptimizeCommand.php',
+        'Caffeinated\\Modules\\Console\\Commands\\ModuleSeedCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Commands/ModuleSeedCommand.php',
+        'Caffeinated\\Modules\\Console\\GeneratorCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/GeneratorCommand.php',
+        'Caffeinated\\Modules\\Console\\Generators\\MakeControllerCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Generators/MakeControllerCommand.php',
+        'Caffeinated\\Modules\\Console\\Generators\\MakeMiddlewareCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Generators/MakeMiddlewareCommand.php',
+        'Caffeinated\\Modules\\Console\\Generators\\MakeMigrationCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Generators/MakeMigrationCommand.php',
+        'Caffeinated\\Modules\\Console\\Generators\\MakeModelCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Generators/MakeModelCommand.php',
+        'Caffeinated\\Modules\\Console\\Generators\\MakeModuleCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Generators/MakeModuleCommand.php',
+        'Caffeinated\\Modules\\Console\\Generators\\MakePolicyCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Generators/MakePolicyCommand.php',
+        'Caffeinated\\Modules\\Console\\Generators\\MakeProviderCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Generators/MakeProviderCommand.php',
+        'Caffeinated\\Modules\\Console\\Generators\\MakeRequestCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Generators/MakeRequestCommand.php',
+        'Caffeinated\\Modules\\Console\\Generators\\MakeSeederCommand' => __DIR__ . '/..' . '/caffeinated/modules/src/Console/Generators/MakeSeederCommand.php',
+        'Caffeinated\\Modules\\Contracts\\Repository' => __DIR__ . '/..' . '/caffeinated/modules/src/Contracts/Repository.php',
+        'Caffeinated\\Modules\\Database\\Migrations\\Migrator' => __DIR__ . '/..' . '/caffeinated/modules/src/Database/Migrations/Migrator.php',
+        'Caffeinated\\Modules\\Facades\\Module' => __DIR__ . '/..' . '/caffeinated/modules/src/Facades/Module.php',
+        'Caffeinated\\Modules\\Middleware\\IdentifyModule' => __DIR__ . '/..' . '/caffeinated/modules/src/Middleware/IdentifyModule.php',
+        'Caffeinated\\Modules\\Modules' => __DIR__ . '/..' . '/caffeinated/modules/src/Modules.php',
+        'Caffeinated\\Modules\\ModulesServiceProvider' => __DIR__ . '/..' . '/caffeinated/modules/src/ModulesServiceProvider.php',
+        'Caffeinated\\Modules\\Providers\\BladeServiceProvider' => __DIR__ . '/..' . '/caffeinated/modules/src/Providers/BladeServiceProvider.php',
+        'Caffeinated\\Modules\\Providers\\ConsoleServiceProvider' => __DIR__ . '/..' . '/caffeinated/modules/src/Providers/ConsoleServiceProvider.php',
+        'Caffeinated\\Modules\\Providers\\GeneratorServiceProvider' => __DIR__ . '/..' . '/caffeinated/modules/src/Providers/GeneratorServiceProvider.php',
+        'Caffeinated\\Modules\\Providers\\HelperServiceProvider' => __DIR__ . '/..' . '/caffeinated/modules/src/Providers/HelperServiceProvider.php',
+        'Caffeinated\\Modules\\Providers\\RepositoryServiceProvider' => __DIR__ . '/..' . '/caffeinated/modules/src/Providers/RepositoryServiceProvider.php',
+        'Caffeinated\\Modules\\Repositories\\LocalRepository' => __DIR__ . '/..' . '/caffeinated/modules/src/Repositories/LocalRepository.php',
+        'Caffeinated\\Modules\\Repositories\\Repository' => __DIR__ . '/..' . '/caffeinated/modules/src/Repositories/Repository.php',
+        'Caffeinated\\Modules\\Support\\AuthServiceProvider' => __DIR__ . '/..' . '/caffeinated/modules/src/Support/AuthServiceProvider.php',
+        'Caffeinated\\Modules\\Support\\ServiceProvider' => __DIR__ . '/..' . '/caffeinated/modules/src/Support/ServiceProvider.php',
+        'Caffeinated\\Modules\\Traits\\MigrationTrait' => __DIR__ . '/..' . '/caffeinated/modules/src/Traits/MigrationTrait.php',
         'Carbon\\Carbon' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Carbon.php',
         'Carbon\\CarbonInterval' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
+        'Carbon\\Exceptions\\InvalidDateException' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php',
         'ClassPreloader\\ClassList' => __DIR__ . '/..' . '/classpreloader/classpreloader/src/ClassList.php',
         'ClassPreloader\\ClassLoader' => __DIR__ . '/..' . '/classpreloader/classpreloader/src/ClassLoader.php',
         'ClassPreloader\\ClassNode' => __DIR__ . '/..' . '/classpreloader/classpreloader/src/ClassNode.php',
@@ -1227,6 +1267,7 @@ class ComposerStaticInitc6fcfa1273ccb4b81bb991936c21b9fa
         'Illuminate\\Mail\\Message' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Message.php',
         'Illuminate\\Mail\\SendQueuedMailable' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/SendQueuedMailable.php',
         'Illuminate\\Mail\\TransportManager' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/TransportManager.php',
+        'Illuminate\\Mail\\Transport\\ArrayTransport' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Transport/ArrayTransport.php',
         'Illuminate\\Mail\\Transport\\LogTransport' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Transport/LogTransport.php',
         'Illuminate\\Mail\\Transport\\MailgunTransport' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Transport/MailgunTransport.php',
         'Illuminate\\Mail\\Transport\\MandrillTransport' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Mail/Transport/MandrillTransport.php',
@@ -1248,6 +1289,7 @@ class ComposerStaticInitc6fcfa1273ccb4b81bb991936c21b9fa
         'Illuminate\\Notifications\\Events\\NotificationSending' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Notifications/Events/NotificationSending.php',
         'Illuminate\\Notifications\\Events\\NotificationSent' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Notifications/Events/NotificationSent.php',
         'Illuminate\\Notifications\\HasDatabaseNotifications' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Notifications/HasDatabaseNotifications.php',
+        'Illuminate\\Notifications\\Messages\\BroadcastMessage' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Notifications/Messages/BroadcastMessage.php',
         'Illuminate\\Notifications\\Messages\\DatabaseMessage' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Notifications/Messages/DatabaseMessage.php',
         'Illuminate\\Notifications\\Messages\\MailMessage' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Notifications/Messages/MailMessage.php',
         'Illuminate\\Notifications\\Messages\\NexmoMessage' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Notifications/Messages/NexmoMessage.php',
@@ -1715,7 +1757,7 @@ class ComposerStaticInitc6fcfa1273ccb4b81bb991936c21b9fa
         'PHPUnit_Framework_Constraint_TraversableContains' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/TraversableContains.php',
         'PHPUnit_Framework_Constraint_TraversableContainsOnly' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/TraversableContainsOnly.php',
         'PHPUnit_Framework_Constraint_Xor' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/Xor.php',
-        'PHPUnit_Framework_CoveredCodeNotExecutedException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/PHPUnit_Framework_CoveredCodeNotExecutedException.php',
+        'PHPUnit_Framework_CoveredCodeNotExecutedException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/CoveredCodeNotExecutedException.php',
         'PHPUnit_Framework_Error' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Error.php',
         'PHPUnit_Framework_Error_Deprecated' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Error/Deprecated.php',
         'PHPUnit_Framework_Error_Notice' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Error/Notice.php',
@@ -1727,7 +1769,7 @@ class ComposerStaticInitc6fcfa1273ccb4b81bb991936c21b9fa
         'PHPUnit_Framework_IncompleteTestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/IncompleteTestCase.php',
         'PHPUnit_Framework_IncompleteTestError' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/IncompleteTestError.php',
         'PHPUnit_Framework_InvalidCoversTargetException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/InvalidCoversTargetException.php',
-        'PHPUnit_Framework_MissingCoversAnnotationException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/PHPUnit_Framework_MissingCoversAnnotationException.php',
+        'PHPUnit_Framework_MissingCoversAnnotationException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/MissingCoversAnnotationException.php',
         'PHPUnit_Framework_MockObject_BadMethodCallException' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Framework/MockObject/Exception/BadMethodCallException.php',
         'PHPUnit_Framework_MockObject_Builder_Identity' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Framework/MockObject/Builder/Identity.php',
         'PHPUnit_Framework_MockObject_Builder_InvocationMocker' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Framework/MockObject/Builder/InvocationMocker.php',
