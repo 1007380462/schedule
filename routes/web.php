@@ -15,3 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+#Route::resource('home','HomeController');
+
+Route::group(['prefix'=>'home'],function(){
+   Route::get('/','HomeController@index');
+   Route::get('/index','HomeController@index');
+   Route::get('/sl','HomeController@sl');
+});
