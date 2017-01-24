@@ -179,6 +179,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Caffeinated\Modules\ModulesServiceProvider::class,
+        Stevenyangecho\UEditor\UEditorServiceProvider::class,
 
     ],
 
