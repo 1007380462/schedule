@@ -29,7 +29,7 @@ Here is some echo `\'inline code\'`;';
         $a=file_get_contents(public_path('jdy.txt'));
         $b= Parsedown::instance()->text($a);
         $c='<style> code{background-color: rgba(46, 79, 37, 0.6)}</style>';
-        $b+=$c;
+        $b.=$c;
         echo $b;
         var_dump("sdsdd");
     }
