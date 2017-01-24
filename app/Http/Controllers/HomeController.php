@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Parsedown;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 
@@ -11,6 +12,21 @@ class HomeController extends Controller{
     }
 
     public function index(){
+        $parsedown=new Parsedown();
+        $a='#M My article
+ Welcome to my article,
+* Point one
+* Point two
+* Point three
+```
+<?php
+foreach(range(1,10) as $k){
+echo $x;
+}
+?>
+```
+Here is some echo `\'inline code\'`;';
+        echo $parsedown->text($a);
         var_dump("sdsdd");
     }
 }
