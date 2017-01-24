@@ -1,0 +1,1617 @@
+# 金斗云接口文档
+ 
+## 修订记录
+ 
+| 修订时间   | 修订内容                                                  |
+|------------|-----------------------------------------------------------|
+| 2016-12-02 | [3.3 创建投保单](#proposal) 增加 `notify_url` 参数用于异步通知|
+| 2016-12-02 | 将返回的 `notice_id` 改为 `notification_id`               |
+| 2016-12-02 | 更改 [3.10 获取通知结果](#polling_notice) 请求路径更       |
+| 2016-12-02 | 为了统一风格将返回的 `proposal_no` 改为 `proposal_id`     |
+| 2016-12-05 | 增加一个投保单状态, FAIL: 提交失败                      |
+ 
+<a name="api_convention"></a>
+## 接口约定
+1. 接口编码统一使用 UTF-8
+2. 所有接口都需要携带 `通用 HTTP 头` 一节所描述的 HTTP 头
+3. 所有接口需要按照签名规则进行签名, 参见 `接口签名` 一节
+4. 使用 RESTful 风格
+5. 请求包体格式为 JSON
+ 
+### 通⽤ HTTP 头
+在 HTTP 头中发送以下内容，所有请求 **均需要** 带以下 HTTP 头
+ 
+HTTP 头名称 | 说明 | 必选
+------------------------- | ------------------------- | -------------------------
+Accept             | 统一为: application/vnd.botpy.v1+json, v1 表示当前接口版本 | 是
+Authorization      | 认证头, 格式为: appid APPID      | 是
+X-Yobee-Timestamp| 当前 Unix 时间戳(单位秒) | 是
+X-Yobee-Signature | 签名串 | 是
+ 
+### 接口签名
+**StringToSign** = `X-Yobee-Timestamp` + `APPKEY` + `Accept` + `url(不含查询参数)` + `查询参数按 key 的字典序拼接` + `Lowercase(MD5(HTTP body))` + `APPID`
+ 
+**X-Yobee-Signature(签名串)** = Lowercase(Binary2HEX(HMAC-SHA256(`APPKEY`, `StringToSign`)))
+ 
+* Binary2HEX 将二进制转换为 HEX
+* HMAC-SHA256 使用 HMAC 算法签名, 摘要算法为 sha256
+* Lowercase 将字符串转换为小写
+ 
+#### 拼接查询参数
+ 
+查询参数指通过 URL 传递的参数, 如:
+ 
+    http://dev.agent-open.iyobee.com/abc?c=val1&a=val2
+ 
+其中 `c=val1&a=val2` 为查询参数, 拼接首先对 `key` 按照字典序排序并进行拼接, 按如下方式拼接:
+ 
+    `a` + `val2` + `c` + `val1`
+ 
+拼接的结果为:
+ 
+    aval2cval1
+ 
+#### 示例
+ 
+假设有如下信息
+ 
+- APPID: 86d4c3c0d23c0ca99680663d20b3074e3bc3a181
+- APPKEY: io2v3Ufw8ApmpDJ3J/OW2FznUZUckSMS9yF2QHetai2h2F6c01e5kQ==
+ 
+发起如下请求:
+ 
+```
+> POST /demo?demo=true&test=true HTTP/1.1
+> Host: dev.agent-open.iyobee.com
+> User-Agent: curl/7.49.1
+> Accept: application/vnd.botpy.v1+json
+> Content-Type: application/json
+> Authorization: appid 86d4c3c0d23c0ca99680663d20b3074e3bc3a181
+> X-Yobee-Timestamp: 1479981161
+> X-Yobee-Signature: 79f35877a3b1f9c6120cb8f3aeec54ec27b0a1b67ba19c1dd2294251299f9f05
+> Content-Length: 20
+ 
+{"foo": 1, "bar": 2}
+```
+ 
+则拼接的`待签名串`规则为:
+ 
+- X-Yobee-Timestamp: `1479981161`
+- APPKEY: `io2v3Ufw8ApmpDJ3J/OW2FznUZUckSMS9yF2QHetai2h2F6c01e5kQ==`
+- Accept: `application/vnd.botpy.v1+json`
+- url 不含参数: `http://dev.agent-open.iyobee.com/demo`
+- 查询参数按 key 的字典序拼接 `demotruetesttrue`
+- 请求包体的 MD5: `9ce747bdc7e9a1b2475963c4ffeb56ed` ( `Lowercase(MD5('{"foo": 1, "bar": 2}'))` )
+- APPID: `86d4c3c0d23c0ca99680663d20b3074e3bc3a181`
+ 
+最终拼接的串为:
+ 
+```
+1479981161io2v3Ufw8ApmpDJ3J/OW2FznUZUckSMS9yF2QHetai2h2F6c01e5kQ==application/vnd.botpy.v1+jsonhttp://dev.agent-open.iyobee.com/demodemotruetesttrue9ce747bdc7e9a1b2475963c4ffeb56ed86d4c3c0d23c0ca99680663d20b3074e3bc3a181
+```
+ 
+计算的签名为:
+ 
+```
+79f35877a3b1f9c6120cb8f3aeec54ec27b0a1b67ba19c1dd2294251299f9f05
+```
+ 
+### 接口返回格式
+ 
+当请求失败时返回如下信息
+ 
+```javascript
+{
+    "error": "错误信息",            // 错误信息, 当请求失败时返回
+}
+```
+ 
+请求成功时参见各个接口的定义.
+ 
+### HTTP 状态码
+ 
+- 200   -   请求成功(GET)
+- 201   -   请求成功且创建实体成功(POST/PUT/PATCH)
+- 202   -   请求已进入队列
+- 204   -   成功但没有响应包体(DELETE/PATCH)
+- 400   -   错误的请求(POST/PUT/PATCH)
+- 401   -   没有提供 Authorization 头或认证错误
+- 403   -   没有权限
+- 404   -   资源未找到
+- 406   -   Accept 头错误
+- 410   -   该资源被删除
+- 500   -   服务器错误
+- 503   -   服务器维护中
+ 
+## 文档约定
+ 
+文档会按照如下方式定义请求方式
+ 
+    请求方法    请求资源    [请求正确返回的 HTTP 状态码]
+ 
+如
+ 
+    GET /   [200]
+ 
+表明使用 GET 方法请求 `/` 且正确的返回HTTP 状态码为 200.
+ 
+若在 URL 中出现像 `:foobar` 的字符串则表示该部分是一个需要被替换的串, 应该是前面接口返回的字段的值.
+ 
+如
+    GET /requests/quotations/:request_id    [200]
+ 
+则表示需要用前面接口返回 `request_id` 替换请求资源路径中的 `:request_id`.
+ 
+ 
+## 接口列表
+ 
+### 1. 准备接口
+1. [获取支持的城市列表](#city)
+2. [获取元数据](#meta)
+3. [提交保险公司账号](#account)
+4. [更新账号信息](#patch_account)
+5. [获取账号列表](#account_list)
+6. [获取账号信息](#account_info)
+ 
+### 2. 信息查询接口
+1. [创建续保查询请求](#renewal)
+2. [轮询续保查询结果](#polling_renewal)
+ 
+ 
+### 3. 出单流程接口
+ 
+1. [创建报价请求](#quotation)
+2. [轮询报价结果](#polling_quotation)
+3. [创建投保单](#proposal)
+4. [查询投保单](#proposal_query)
+5. [提交核保](#underwriting)
+6. [提交身份证验证码](#id_check)
+7. [修改投保人手机号](#modify_privy_phone)
+8. [删除投保单](#proposal_remove)
+9. [创建同步任务](#sync)
+10. [获取通知结果](#polling_notice)
+ 
+> 接口 3.5~3.8 结果不通过轮询方式返回, 而是通过异步的通知实现, 具体参见[异步通知](#notice) 一节
+ 
+### 4. 辅助接口
+ 
+1. [查询车辆信息](#vehicle)
+2. [查询出险记录](#claim)
+3. [发送身份证验证码](#id)
+ 
+ 
+### 推荐调用流程
+ 
+#### 调用前的准备
+ 
+1. 调用 [1.2 获取元数据](#meta) 并缓存到本地, 推荐缓存时间为1天
+2. 提交对应的保险公司账号
+ 
+#### 调用流程
+ 
+1. 使用 [3.1 创建报价请求](#quotation), 并使用 [3.2 轮询报价结果](#polling_quotation) 获取报价.
+2. 报价成功后收集所需投保信息并根据报价结果创建本地订单, 并根据收集的信息调用 [3.3 创建投保单](#proposal) 进行投保.
+3. 通过回调接口异步的接收投保结果
+    1. 成功后根据通知数据更新本地订单, 并提交核保(也可以在投保报价时指定自动进行核保)
+        1. 通过回调异步的接收核保结果
+            1. 核保通过
+                1. 若投保人为公户或投保城市不为北京则直接到缴费阶段
+                2. 否则进如身份证验证码发送和校验环节
+            2. 失败则完成流程
+    2. 失败则完成流程
+ 
+<a name="city"></a>
+ 
+### 1. 获取支持的城市列表
+#### 请求方式
+ 
+    GET /cities   [200]
+ 
+#### 请求参数
+ 
+    无
+ 
+#### 返回值
+ 
+```javascript
+{
+    "cities": [
+        {
+            "code": "110100",          // 省份代码
+            "name": "北京",            // 省份名称
+            "prefix": "京",                 // 号牌前缀
+            "cities": [                      // 城市列表
+                {
+                    "code": "110100",       // 城市代码
+                    "name": "北京市",       // 城市名称
+                    "prefix": "京A",        // 车牌前缀
+                },
+                // ...
+            ]
+        },
+        // ...
+    ]
+}
+```
+ 
+<a name="meta"></a>
+## 1.2 获取元数据
+ 
+此接口用于获取元数据用于其他接口, 包括:
+ 
+- 支持的保险公司
+    - 保险公司支持的验证码发送渠道
+    - 保险公司需要的账号字段
+    - 该保险公司是否支持续保
+    - 该保险公司出单是否需要验证身份证
+- 支持的投保人类型
+- 车辆元数据
+    - 支持的车辆种类
+        + 各个车辆种类支持的车辆使用性质
+    - 支持的车辆使用性质
+    - 支持的号牌种类
+    - 支持的燃料种类
+- 支持险种列表
+ 
+ 
+### 请求方式
+ 
+    GET /meta/:city_code   [200]
+ 
+### 请求参数
+ 
+    无
+ 
+### 返回值
+ 
+```javascript
+{
+    "ics": [                                    // 支持的保险公司列表
+        {
+            "code": "epicc",                    // 保险公司代码
+            "name": "人保车险",
+            "logo_url": "https://ip.host/logo.png",
+            "is_support_renewal": true,         // 是否支持续保查询
+            "is_require_id_check": true,        // 是否需要验证身份证
+            "is_support_id_code": true,         // 是否支持发送身份证验证码
+            "sales_channels": [         // 支持的销售渠道
+                {
+                    "text": "专业代理",         // 渠道名称
+                    "code": "AA",               // 渠道代码
+                }
+            ],
+            "require_account_fields": [         // 需要的账号字段
+                {
+                    "name": "user",             // 字段名
+                    "text": "用户名",           // 字段文本
+                    "type": "string",           // 字段类型, string: 字符串, number: 数字, boolean: 布尔
+                    "description": "登录保险公司后台的用户名",  // 详细描述
+                },
+                {
+                    "name": "pass",             // 字段名
+                    "text": "密码",             // 字段文本
+                    "type": "string",
+                    "description": "登录保险公司后台的密码"
+                }
+            ],
+        }
+    ],
+ 
+    "privy": [                          // 关系人元数据
+        {
+            "type": "holder_type",      // 持有人(投保人/被保人/车主)类型
+            "meta": [
+                {
+                    "text": "个人",
+                    "code": "01"
+                    "order": 0,             // 排序号, 使用升序, 序号越大越靠后
+                },
+                {
+                    "text": "公户",
+                    "code": "02",
+                    "order": 1,
+                }
+            ]
+        },
+        {
+            "type": "document_type",    // 证件类型
+            "meta": [
+                {
+                    "text": "身份证",           // 类型名称
+                    "code": "01"                // 类型代码
+                    "order": 0,
+                },
+                {
+                    "text": "护照",             // 类型名称
+                    "code": "02"
+                    "order": 1,
+                },
+                {
+                    "text": "组织机构代码",
+                    "code": "07"
+                    "order": 2,
+                },
+                {
+                    "text": "统一社会信用代码",
+                    "code": "09"
+                    "order": 3,
+                },
+                {
+                    "text": "营业执照号",
+                    "code": "11"
+                    "order": 3,
+                }
+            ]
+        }
+    ],
+ 
+    "vehicle": [                        // 车辆元数据
+        {
+            "type": "license_type",     // 元数据类型
+            "meta": [                   // 元数据
+                {
+                    "code": "01",           // 代码
+                    "text": "大型汽车",     // 显示文本
+                    // add @ 16-09-19: 默认服务端返回时已经排好序的
+                    // 此字段用于客户端反序列化之后顺序可能被打乱
+                    // 有客户端自己进行排序
+                    "order": 0,             // 排序号, 使用升序, 序号越大越靠后
+                }
+                // ...
+            ]
+        },
+ 
+        {
+            "type": "class",            // 车辆种类
+            "meta": [
+                {
+                    "code": "A01",
+                    "text": "客车",
+                    "order": 0,
+                    "support_usage_natures": ["211", "210"],
+                }
+            ]
+        },
+        {
+            "type": "usage_nature",     // 车辆使用性质
+            "meta": [
+                {
+                    "code": "211",
+                    "text": "家庭自用",
+                    "order": 0,
+                }
+            ]
+        },
+        {
+            "type": "fuel_type",        // 燃油种类
+            "meta": [
+                {
+                    "code": "0",
+                    "text": "非电",
+                    "order": 0,
+                }
+            ]
+        }
+        // ...
+    ],
+ 
+    "coverages": [                           // 支持的险种列表
+        {
+            "type": "force",                // 分组代码, force: 交强险, biz-master: 商业险主险, biz-extra: 商业险附加险, biz-exempt: 不计免赔特约险
+            "code": "force",                // 险种代码
+            "name": "交强险/车船税"         // 险种名称
+            "order": 0,                     // 排序号(升序)
+            // 险种描述
+            "description": "发生车险事故时，赔偿对第三方造成的人身及财产损失（不保本车及车上人员），强制购买。",
+            "amount_type": "checkbox",      // 险种保额类型, checkbox: 开关, select: 需从 support_amounts 从选择
+            "default_amount": 1,            // 推荐默认值
+            "is_support_exempt": 0,         // 是否支持不计免赔特约险
+            "is_support_non_passenger": 1,  // 是否支持非客车投保
+            "dependency": "",               // 依赖险种代码
+        },
+        {
+            "type": "biz-master",
+            "code": "damage",
+            "name": "机动车辆损失险"
+            "order": 1,
+            "description": "发生车险事故时，赔偿自己车辆损失的费用，是对车最基本的保障。",
+            "amount_type": "checkbox",
+            "default_amount": 1,
+            "is_support_exempt": 1,
+            "is_support_non_passenger": 1,  // 是否支持非客车投保
+            "dependency": "",
+        },
+        {
+            "type": "biz-master",
+            "code": "third",
+            "name": "第三者责任险"
+            "order": 3,
+            "description": "发生车险事故时，赔偿对他人造成的人身及财产损失。",
+            "amount_type": "select",
+            "default_amount": 500000,
+            "is_support_exempt": 1,
+            "is_support_non_passenger": 1,  // 是否支持非客车投保
+            "dependency": "",
+            "support_amounts": [                // 支持的保额
+                {
+                    "amount": 0,                // 保额
+                    "label": "不投保"           // 显示文本
+                },
+                {
+                    "amount": 50000,
+                    "label": "5万"
+                },
+                {
+                    "amount": 100000,
+                    "label": "10万"
+                }
+            ],
+        },
+        {
+            "type": "biz-exempt",
+            "code": "exempt_damage",
+            "name": "机动车辆损失险不计免赔"
+            "amount_type": "checkbox",
+            "order": 21,
+            "description": "",
+            "default_amount": 1,
+            "is_support_exempt": 0,
+            "is_support_non_passenger": 1,  // 是否支持非客车投保
+            "dependency": "damage",
+        },
+    ],
+}
+```
+ 
+ 
+<a name="account"></a>
+## 1.3 提交保险公司账号
+ 
+若想要进行后续的步骤必须有对应的保险公司账号, 所以应当首先按照 [1.2 获取元数据](#meta)
+返回对应保险公司需要的字段来上传对应保险公司的账号信息.
+ 
+### 请求方式
+ 
+    POST /accounts   [201]
+ 
+### 请求参数
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| ic\_code  | string      | 是       | 保险公司代码                             |
+| account   | Object      | 是       | 账号信息                                 |
+| prov\_code | string     | 是       | 账号所在省份代码                         |
+| city\_code | string     | 是       | 账号所在城市代码                         |
+| contacts   | List\<ContactDTO\> | 是 | 联系人列表, 用于接收密码错误报警       |
+| is\_default | boolean   | 否       | 作为默认报价账号, 默认为 false           |
+ 
+账号信息 `account` 字段是一个 JSON 对象, 其传值应当按照 [1.2 获取元数据](#meta)
+接口返回的 `需要的账号字段` 来决定, 比如返回如下信息:
+ 
+```json
+{
+    "require_account_fields": [
+        {
+            "name": "user",
+            "text": "用户名",
+            "type": "string",
+            "description": ""
+        },
+        {
+            "name": "pass",
+            "text": "密码",
+            "type": "string",
+            "description": ""
+        },
+        {
+            "name": "usb_key",
+            "text": "USB 密钥",
+            "type": "string",
+            "description": ""
+        }
+    ]
+}
+```
+ 
+那么 `account` 字段需要构造成如下 JSON:
+ 
+```json
+{
+    "user": "zhangsan",
+    "pass": "Passw0rd",
+    "usb_key": "110091",
+}
+```
+ 
+#### ContactDTO
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| name      | string      | 是       | 是否必选                                 |
+| email     | string      | 是       | 电子邮箱地址                             |
+| phone     | string      | 是       | 手机号码                                 |
+ 
+### 返回值
+ 
+```javascript
+{
+    "account_id": "ditnuocca",      // 账号 id, 用于出单流程接口
+    "prov_code": "110100",         
+    "city_code": "110100",
+    "ic_code": "epicc"
+    "is_default": false,
+    "contacts": [
+        {
+            "name": "张三",
+            "email": "email@e.com",
+            "phone": "13800138000",
+        }
+    ],
+    "info": {
+        "user": "user",
+        "pass": "Passw0rd",
+        "usb_key": "110091",
+    }
+}
+```
+ 
+<a name="patch_account"></a>
+## 1.4 更新账号信息
+ 
+此接口用于更新账号密码和联系人列表.
+ 
+### 请求方式
+ 
+    PATCH /accounts/:account_id     [200]
+ 
+ 
+### 请求参数
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| account   | Object      |  否       | 账号信息                                |
+| contacts   | List\<ContactDTO\> |否| 联系人列表, 用于接收密码错误报警         |
+| is\_default | boolean   | 否       | 作为默认报价账号, 默认为不更新           |
+ 
+**账号信息更新时 `account` 字段和提交是有区别: 提交时需要提供全部所需的信息, 更新时仅需要提供有变更的信息**
+ 
+**所有参数若不提供则不进行更新**
+ 
+ 
+### 返回值
+ 
+```javascript
+{
+    "account_id": "ditnuocca",      // 账号 id, 用于出单流程接口
+    "prov_code": "110100",         
+    "city_code": "110100",
+    "ic_code": "epicc"
+    "is_default": false,
+    "contacts": [
+        {
+            "name": "张三",
+            "email": "email@e.com",
+            "phone": "13800138000",
+        }
+    ],
+    "info": {
+        "user": "user",
+        "pass": "Passw0rd",
+        "usb_key": "110091",
+    }
+}
+```
+ 
+<a name="account_list"></a>
+## 1.5 获取账号列表
+ 
+### 请求方式
+ 
+    GET /accounts   [200]
+ 
+### 请求参数
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| page      | integer     | 是       | 当前分页索引                             |
+ 
+### 返回值
+ 
+```javascript
+{
+    "total": 10,        // 总条目
+    "page": 1,          // 当前分页索引
+    "size": 10,         // 分页大小
+    "accounts": [       // 账号列表
+        {
+            "account_id": "ditnuocca",      // 账号 id, 用于出单流程接口
+            "prov_code": "110100",         
+            "city_code": "110100",
+            "ic_code": "epicc"
+            "is_default": false,
+            "contacts": [
+                {
+                    "name": "张三",
+                    "email": "email@e.com",
+                    "phone": "13800138000",
+                }
+            ],
+            "info": {
+                "user": "user",
+                "pass": "Passw0rd",
+                "usb_key": "110091",
+            }
+        },
+        // ...
+ 
+    ]
+}
+```
+ 
+<a name="account_info"></a>
+## 1.6 获取账号信息
+ 
+### 请求方式
+ 
+    GET /accounts/:account_id
+ 
+### 请求参数
+ 
+    无
+ 
+### 返回值
+ 
+```javascript
+{
+    "account_id": "ditnuocca",      // 账号 id, 用于出单流程接口
+    "prov_code": "110100",         
+    "city_code": "110100",
+    "ic_code": "epicc"
+    "is_default": false,
+    "contacts": [
+        {
+            "name": "张三",
+            "email": "email@e.com",
+            "phone": "13800138000",
+        }
+    ],
+    "info": {
+        "user": "user",
+        "pass": "Passw0rd",
+        "usb_key": "110091",
+    }
+}
+```
+ 
+<a name="renewal"></a>
+## 2.1. 创建续保查询请求
+ 
+### 请求方式
+ 
+    POST /requests/renewals [201]
+ 
+### 请求参数
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| prov\_code | string     | 是       | 投保省份代码                             |
+| city\_code | string     | 是       | 投保城市代码                             |
+| ics       | List\<[ICDTO](#ic_dto)\> | 是      | 查询续保的保险公司列表                      |
+| vehicle   | [VehicleDTO](#vehicle_dto)  | 是       | 车辆信息                                 |
+ 
+### 返回值
+ 
+```javascript
+{
+    "request_id": "ditseuqet",      // 报价请求 id
+}
+```
+ 
+<a name="polling_renewal"></a>
+## 2.2. 轮询续保查询结果
+ 
+### 请求方式
+ 
+    GET /requests/renewals/:request_id  [200]
+ 
+### 请求参数
+ 
+    无
+ 
+### 返回值
+ 
+```javascript
+{
+    "is_done": true,                    // 是否完成
+    "is_success": true,                 // 是否成功
+ 
+    "renewal": {                       // 续保数据, 完成且成功时返回
+        "ic_code": "pingan",
+ 
+        "ic_info": {                    // 保险公司信息
+            "name": "人保车险",         // 名称
+            "code": "epicc",            // 代码
+            "logo_url": "https://ip.host/logo.png",     // logo 图片地址
+        },
+ 
+        "biz_info": {                           // 商业险信息
+            "start_date": "2015-04-28",         // 上年商业险起保日期
+            "end_date": "2016-04-27"            // 上年商业险止保日期
+            "selection": {                      // 上年险种选择
+                "passenger": {
+                    "amount": "10000.00",
+                    "code": "passenger",
+                    "premium": "0.00"
+                },
+                "third": {
+                    "amount": "200000.00",
+                    "code": "third",
+                    "premium": "0.00"
+                },
+                "driver": {
+                    "amount": "10000.00",
+                    "code": "driver",
+                    "premium": "0.00"
+                },
+                "damage": {
+                    "amount": "800000.00",
+                    "code": "damage",
+                    "premium": "0.00"
+                },
+                "glass": {
+                    "amount": "2",
+                    "code": "glass",
+                    "premium": "0.00"
+                },
+                "exempt_driver": {
+                    "amount": "1",
+                    "code": "exempt_driver",
+                    "premium": "0.00"
+                },
+                "exempt_damage": {
+                    "amount": "1",
+                    "code": "exempt_damage",
+                    "premium": "0.00"
+                },
+                "exempt_third": {
+                    "amount": "1",
+                    "code": "exempt_third",
+                    "premium": "0.00"
+                }
+            },
+        },
+ 
+        "force_info": {
+            "start_date": "2015-04-26",          // 交强险起保日期
+            "end_date": "2016-04-27",            // 交强险止保日期
+        },
+ 
+        "renewal": {                            // 续保信息
+            "owner": {                          // 车主信息
+                "name": "田丽"
+                "phone": "",                    // 手机号
+                "document_type": "01",          // 证件类型
+                "document_no": "100xxx",    // 证件号
+                "address": "北京市海淀区西三旗 ",       // 地址
+            },
+            "applicant": {                        // 投保人
+                "name": "田丽"
+                "phone": "",   
+                "holder_type": "01",              // 投保人类型
+                "document_type": "1",
+                "document_no": "232700197005040023",
+                "address": "",                      // 地址
+            },
+            "vehicle": {                            // 车辆信息
+                "license_no": "京LN0935",
+                "owner": "田丽影",
+                "frame_no": "WBAHN21008DT96687",
+                "enroll_date": "2008-01-22",
+                "engine_no": "05716653N52B30BF",
+                "vehicle_nature": "211",
+            }
+        },
+    }
+}
+```
+ 
+<a name="quotation"></a>
+## 3.1. 创建报价请求
+ 
+### 请求方式
+ 
+    POST /requests/quotations   [201]
+ 
+### 请求参数
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| prov\_code | string     | 是       | 投保省份代码                             |
+| city\_code | string     | 是       | 投保城市代码                             |
+| vehicle   | [VehicleDTO](#vehicle_dto)  | 是       | 车辆信息                 |
+| vehicle\_nature | string | 是      | 车辆使用性质, 参见[1.2 获取元数据](#meta) |
+| holder\_type | string   | 是       | 持有人类型代码, 参见[1.2 获取元数据](#meta) |
+| selection | [SelectionDTO](#selection_dto) | 是      | 险种选择              |
+| ics       | List\<[ICDTO](#ic_dto)\> | 是      | 报价的保险公司列表                      |
+| selected\_model | [SelectedModelDTO](#selected_model_dto) | 否  | 所选车型信息|
+| biz\_start\_date | DateString  | 否      | 商业险起保日期, 格式为: YYYY-mm-dd |
+| force\_start\_date | DateString | 否     | 交强险起保日期, 格式为: YYYY-mm-dd |
+| extend    | [ExtendDTO](#extend_dto) | 否     | 扩展信息                                 |
+ 
+ 
+### 返回值
+ 
+```javascript
+{
+    "request_id": "ditseuqet",      // 报价请求 id
+}
+```
+ 
+<a name="polling_quotation"></a>
+## 3.2. 轮询报价结果
+### 请求方式
+ 
+    GET /requests/quotations/:request_id    [200]
+ 
+### 请求参数
+ 
+    无
+ 
+### 返回值
+ 
+```javascript
+{
+    "is_done": true,                        // 所有报价是否结束
+    "quotations": [
+        {
+            "quotation_id": "dinoitatouq",                  // 报价 id
+            "ic_code": "pingan",                            // 保险公司代码
+            "is_done": true,                                // 报价是否完成
+            "is_success": true,                             // 报价是否成功
+            "biz_info": {                                   // 商业险信息
+                "no": "",
+                "detail": [                                 // 报价详情
+                    {
+                        "amount": "41452",                  // 保额
+                        "code": "pilfer",                   // 险种代码
+                        "insured": true,                    // 是否投保
+                        "premium": "290.15",                // 保费
+                        "valid": true,                      // 报价是否有效(如该字段没有则默认为有效)
+                    }
+                ],
+                "discount": "0.9000",                   // 折扣
+                "start_date": "2016-07-29",              // 起保日期
+                "end_date": "2017-07-15",                // 止保日期
+                "total": "3262.14"                      // 总保费
+            },
+            "force_info": {                             // 交强险信息
+                "no": "",                               // 保险公司投保单号
+                "discount": "0.7000",                   // 折扣率
+                "start_date": "2016-07-29",             // 报价起保日期
+                "end_date": "2017-07-15",               // 报价止保日期
+                "last_year_deadline": "",               // 去年止保日期
+                "premium": "640.03",                    // 交强险保费
+                "tax": "0.00"                           // 车船税
+            },
+            "vehicle": {                            // 报价所使用车辆信息
+                "license_no": "冀AD2756",           // 车牌号码
+                "license_type": "02",               // 号牌种类
+                "owner": "王化",                    // 车主姓名
+                "frame_no": "LS4ASB3E8DA668826",    // 车架号
+                "engine_no": "ETA1014632",          // 发动机号
+                "enroll_date": "2015-12-24",        // 初登日期
+                "fuel_type": "0",                   // 燃料类型
+                "seat_count": "8",                  // 座位数
+                "vehicle_nature": "211"             // 车辆使用性质
+            }
+        }
+    ],
+    "request": {                                    // 请求信息
+        "applicant_type": "02",
+        "biz_start_date": "",
+        "city_code": "110100",
+        "create_time": "2016-07-19 12:52:28",
+        "extend": {},
+        "force_start_date": "",
+        "prov_code": "110100",
+        "request_id": "r1mkrc7kmg30k03j",
+        "selection": {
+            "damage": 1,
+            "exempt_damage": 1
+        },
+        "vehicle_nature": "211"
+        "vehicle": {                            // 请求的车辆信息
+            "auto_model_code": "",
+            "create_time": "2016-07-19 12:52:28",
+            "engine_no": "enkjljljlj",
+            "enroll_date": "2015-11-11",
+            "frame_no": "JLVHLJLJLJLJLJLJ",
+            "license_no": "京MM00KK",
+            "license_type": "02",
+            "model_code": "",
+            "owner": "密码",
+            "purchase_price": "0.00",
+            "tax_price": "0.00",
+            "vehicle_data_id": "",
+            "vehicle_name": ""
+        },
+    }
+}
+ 
+```
+ 
+<a name="proposal"></a>
+## 3.3 创建投保单
+ 
+投保的结果以异步通知的方式进行通知, 参见[投保结果通知](#propose_notice).
+ 
+### 请求方式
+ 
+    POST /proposals     [202]
+ 
+### 请求参数
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| notify\_url | string    | 是       | 结果异步通知 URL                         |
+| quotation\_id | string  | 是       | 报价返回的报价 id                        |
+| account\_id   | string  | 否       | 账号 id, 若不提供则使用报价时的账号      |
+| out\_trade\_no | string | 是      | 商户订单号, 用于通知, 最长支持 64 个字符  |
+| insurant  | [PrivyDTO](#privy_dto) | 是      | 被保人信息                     |
+| applicant | [PrivyDTO](#privy_dto) | 是      | 投保人信息                     |
+| owner     | [PrivyDTO](#privy_dto) | 是      | 车主信息                       |
+| is\_uw    | boolean   | 否         | 成功后是否自动进行核保, 默认为 false     |
+| biz\_start\_date | DateString  | 投保商业必传 | 商业险起保日期, 格式为: YYYY-mm-dd |
+| force\_start\_date | DateString | 投保交强险必传  | 交强险起保日期, 格式为: YYYY-mm-dd |
+| extend    | [ExtendDTO](#extend_dto) | 否     | 扩展信息                                 |
+ 
+注意:
+ 
+- 若报价时交强险报价未成功则会按照投保单商业进行提交
+ 
+### 返回值
+ 
+```javascript
+{
+    "notification_id": "diyfiton",        // 通知id
+    "proposal_id": "ongnikcart",    // 投保单号
+}
+```
+ 
+<a name="proposal_query"></a>
+## 3.4 投保单查询
+ 
+获取的投保单信息仅是该单子在当前系统中的快照信息, 若直接操作保险公司后台会导致信息不正确,
+此时请调用 [3.9 提交同步](#sync) 接口进行同步.
+ 
+### 请求方式
+ 
+    GET /proposals/:proposal_id     [200/202]
+ 
+ 
+若状态码返回 `202` 则投保单还未就绪.
+ 
+### 请求参数
+ 
+    无
+ 
+### 返回值
+ 
+#### 投保单状态
+ 
+- FAIL      提交失败
+- INIT      初始
+- UW        核保中
+- UW\_FAIL  核保失败
+- UW\_SUCC  核保成功
+- REFUSED   拒绝承保
+- WAIT\_PAY 等待支付
+- PAID      保费已支付
+ 
+```javascript
+ 
+{
+    "ic_code": "pingan",                                // 保险公司代码
+    "ic_nos": {                                         // 保险公司单号
+        "biz_quote": "biz_quote",                       // 商业险报价单号
+        "force_quote": "force_quote",                   // 交强险报价单号
+        "biz_prop": "porpzib",                          // 商业险投保单号
+        "force_prop": "force_prop",                     // 交强险投保单号
+        "biz_policy": "biz_policy",                     // 商业险保单号
+        "force_policy": "force_policy",                 // 交强险单号
+    },
+ 
+    "biz_start_date": "2015-11-11",                     // 商业险起保日期
+    "biz_end_date": "2016-11-10",                       // 商业险止保日期
+    "force_start_date": "2015-11-11",                   // 交强险起保日期
+    "force_end_date": "2016-11-10",                     // 交强险止保日期
+ 
+    "status": "INIT",                                   // 投保单状态
+ 
+    "uws": [                                            // 核保记录
+        {
+            "tracking_no": "ongnikcartuw",                  // 核保跟踪单号
+            "is_success": true,                                // 是否成功
+            "is_done": true,                                // 是否完成
+            "start_time": "2016-11-18 17:01:56",            // 开始时间
+            "done_time": "2016-11-18 17:02:56",             // 完成时间
+            "is_manually": false,                           // 是否人工核保
+        }
+    ],
+ 
+    "synchronizations": [                           // 同步记录
+        {
+            "tracking_no": "ongnikcartuw",                  // 核保跟踪单号
+            "is_success": true,                                // 是否成功
+            "is_done": true,                                // 是否完成
+            "start_time": "2016-11-18 17:01:56",            // 开始时间
+            "done_time": "2016-11-18 17:02:56",             // 完成时间
+            "is_full": false,                               // 是否完全同步, 非完全同步仅同步状态
+        }
+    ],
+ 
+    "quotation_id": "dinoitatouq",                  // 报价 id
+ 
+    "applicant": {                                      // 投保人信息
+        "name": "xingm",                                // 投保人姓名
+        "holder_type": "01",                            // 投保人类型
+        "document_type": "01",                          // 投保人证件类型
+        "document_no": "110xxxxxx",                     // 投保人证件号
+        "phone": "13800138000",                         // 投保人手机号
+    },
+ 
+    "insurant": {
+        "name": "xingm",                                // 被保人姓名
+        "holder_type": "01",                            // 被保人类型
+        "document_type": "01",                          // 被保人证件类型
+        "document_no": "110xxxxxx",                     // 被保人证件号
+        "phone": "13800138000",                         // 被保人手机号
+    },
+ 
+    "owner": {
+        "name": "xingm",                                // 车主姓名
+        "holder_type": "01",                            // 车主类型
+        "document_type": "01",                          // 车主证件类型
+        "document_no": "110xxxxxx",                     // 车主证件号
+        "phone": "13800138000",                         // 车主手机号
+    },
+ 
+    "quotation": {
+        "biz_info": {                                   // 商业险信息
+            "no": "",
+            "detail": [                                 // 报价详情
+                {
+                    "amount": "41452",                  // 保额
+                    "code": "pilfer",                   // 险种代码
+                    "insured": true,                    // 是否投保
+                    "premium": "290.15",                // 保费
+                    "valid": true,                      // 报价是否有效(如该字段没有则默认为有效)
+                }
+            ],
+ 
+            "discount": "0.9000",                   // 折扣 "start_date": "2016-07-29",              // 起保日期
+            "end_date": "2017-07-15",                // 止保日期
+            "total": "3262.14"                      // 总保费
+        },
+        "force_info": {                             // 交强险信息
+            "no": "",                               // 保险公司投保单号
+            "discount": "0.7000",                   // 折扣率
+            "start_date": "2016-07-29",             // 报价起保日期
+            "end_date": "2017-07-15",               // 报价止保日期
+            "last_year_deadline": "",               // 去年止保日期
+            "premium": "640.03",                    // 交强险保费
+            "tax": "0.00"                           // 车船税
+        },
+    },
+ 
+    "vehicle": {                            // 车辆信息
+        "license_no": "冀AD2756",           // 车牌号码
+        "license_type": "02",               // 号牌种类
+        "owner": "王化",                    // 车主姓名
+        "frame_no": "LS4ASB3E8DA668826",    // 车架号
+        "engine_no": "ETA1014632",          // 发动机号
+        "enroll_date": "2015-12-24",        // 初登日期
+        "fuel_type": "0",                   // 燃料类型
+        "crt_value": "41452.0",             // 车辆当前价值
+        "exhaust": "1.488",                 // 排量
+        "seat_count": "8",                  // 座位数
+        "vehicle_nature": "211"             // 车辆使用性质
+    }
+ 
+}
+```
+ 
+ 
+<a name="underwriting"></a>
+## 3.5. 提交核保
+ 
+此请求的结果将会以异步通知的方式进行通知, 参见[核保结果通知](#uw_notice)
+ 
+### 请求方式
+ 
+    PATCH /proposals/:proposal_id   [202]
+ 
+### 请求参数
+ 
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| is\_uw\_started| boolean  | 是       | 固定值: true                             |
+ 
+### 返回值
+ 
+```javascript
+{
+    "notification_id": "diyfiton",        // 通知id
+}
+```
+ 
+<a name="id_check"></a>
+## 3.6 提交身份证验证码
+ 
+北京地区个人投保需要验证身份证, 此接口用于投保城市为投保人为个人时验证身份证验证码.
+ 
+结果通知参见[验证身份证验证结果通知](#verify_id_code_notice)
+ 
+### 请求方式
+ 
+    PUT /proposals/:proposal_id/id-code  [202]
+ 
+### 请求参数
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| id        | [IDDTO](#id_dto) | 是  | 身份证信息                               |
+| phone     | string      | 是       | 验证的手机号                             |
+| code      | string      | 是       | 身份证验证码                             |
+ 
+### 返回值
+ 
+```javascript
+{
+    "notification_id": "diyfiton",        // 通知id
+}
+```
+ 
+<a name="modify_privy_phone"></a>
+## 3.7 修改投保人手机号
+ 
+结果通知参见[修改投保人手机号结果通知](#modify_phone_notice)
+ 
+### 请求方式
+ 
+    PATCH /proposals/:proposal_id    [202]
+ 
+### 请求参数
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| applicant\_phone | string | 是     | 投保人手机号                             |
+ 
+### 返回值
+ 
+```javascript
+{
+    "notification_id": "diyfiton",        // 通知id
+}
+```
+ 
+<a name="proposal_remove"></a>
+## 3.8. 删除投保单
+ 
+结果通知参见[删除投保单结果通知](#remove_app_notice)
+ 
+ 
+### 请求方式
+ 
+    DELETE /proposals/:proposal_id  [202/204]
+ 
+若返回 204 则不会有对应的结果通知和响应内容.
+ 
+### 请求参数
+ 
+    无
+ 
+### 返回值
+ 
+```javascript
+{
+    "notification_id": "diyfiton",        // 通知id (HTTP 状态码为 202 时返回)
+}
+```
+ 
+<a name="sync"></a>
+## 3.9. 提交同步
+ 
+同步分为完全同步和批量同步, 完全同步会同步保险公司系统中的所有有用的信息,
+批量同步仅同步投保单状态.
+ 
+结果通知参见 [同步任务结果通知](#sync_notice)
+ 
+### 请求方式
+ 
+    POST /synchronizations [202]
+ 
+### 请求参数
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| is\_full  | boolean     | 否       | 进行完全同步                             |
+| proposal\_no | string   |  否      | 投保单号                                 |
+| ic\_proposal\_no | string | 否     | 保险公司投保单号(商业险/交强险)          |
+| account\_id | string    | 非完全同步是必传    |   账号 id                     |
+| date\_range | "YYYY/mm/dd-YYYY/mm/dd" | 否       | 批量同步范围, 仅用于非完全同步, 请注意: 2016/11/17-2016/11/18 是同步两天的, 最长为一周 |
+ 
+完全同步时必须提供投保单号或者保险公司投保单号(交强险和商业险都行)其中一个,
+**若同时提供了保险公司的投保单号和本系统的投保单号则在同步成功后将同步回来的信息更新本系统的投保单信息**
+ 
+### 返回值
+ 
+```javascript
+{
+    "notification_id": "diyfiton",        // 通知id
+}
+```
+ 
+<a name="polling_notice"></a>
+## 3.10. 获取通知结果
+ 
+此接口用于不便于使用回调接口的地方比如开发调试当中去轮询通知的结果.
+ 
+### 请求方式
+ 
+    GET /notifications/:notification_id  [200]
+ 
+### 请求参数
+ 
+    无
+ 
+### 返回值
+ 
+```javascript
+{
+    // 具体返回值参见各个接口对应的通知
+}
+```
+ 
+<a name="vehicle"></a>
+ 
+## 4.1. 查询车辆信息
+ 
+### 请求方式
+ 
+    GET /vehicles       [200/404]
+ 
+### 请求参数
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| license\_no | string    | 是       | 车牌号码                                 |
+| license\_type | string  | 是       | 号牌种类, 参见 [1.2 获取元数据](#meta)   |
+ 
+### 返回值
+ 
+```javascript
+{
+    "license_no": "京MOCK99",
+    "license_type": "02",
+    "owner": "张三",                // 车主姓名
+    "enroll_date": "2015-11-11",    // 初登日期(可能为空)
+    "engine_no": "onenigne",        // 发动机号
+    "frame_no": "onemarf",          // 发动机号
+}
+```
+ 
+<a name="cliam"></a>
+## 4.2. 查询出险记录
+ 
+### 请求方式
+ 
+    GET /claims    [200/404]
+ 
+### 请求参数
+ 
+| 字段名      | 类型   | 必选 | 描述                               |
+|-------------|--------|------|------------------------------------|
+| license\_no | string | 是 | 车牌号|
+| license\_type | string | 是 | 号牌类型, 01: 大型车, 02: 小型车   |
+| frame\_no | string | 是 | 车架号 |
+| engine\_no | string | 是 | 发动机号 |
+ 
+### 返回值
+```javascript
+{
+    "claims": [
+        {
+            "type": "biz",      // 出险类型, biz: 商业险, force: 交强险
+            "is_master": false,  // 是否主车
+            "is_third": false,  // 是否三者车
+            // 出险经过
+            "desc": "单方事故；非现场案件；碰撞墩子；导致本车有损车牌：京L69500，损失部位：左前；请配合查勘处理。"
+            "location": "北京市辖区朝阳区姚村",
+            "loss_time": "2016-07-20",  // 报案时间
+            "driver_name": "张三",      // 驾驶员姓名
+        }
+    ]
+}
+```
+ 
+<a name="id"></a>
+## 4.3. 发送身份证验证码
+ 
+### 请求方式
+ 
+    POST /ids/:ic_code   [204]
+ 
+ 
+`:ic_code` 为保险公司代码.
+ 
+### 请求参数
+ 
+ 
+| 字段名      | 类型   | 必选 | 描述                                |
+|-------------|--------|------|-------------------------------------|
+| machine\_code | string | 是 | 身份证采集设备机器编码              |
+| sales\_channel | string | 否| 机构销售渠道, 默认兼业代理, 具体代码参见 [1.2 获取元数据](#meta) 接口返回 |
+| id          | [IDDTO](#id_dto) | 是  | 身份证信息                 |
+| phone     | string      | 是       | 验证的手机号                             |
+ 
+### 返回值
+ 
+    无
+ 
+ 
+<a name="notice"></a>
+## 异步通知
+ 
+部分任务需要触发调用方一系列的修改和变更, 所以在任务完成后通过异步通知的方式去实现.
+ 
+### 约定
+ 
+为了验证通知的合法性, 在调用通知接口时会使用相同的约定(参见[接口约定](#api_convention))调用调用方提供的通知接口.
+通知接口可以此来判断通知的合法性.
+ 
+接口会以 `POST` 的方式调用回调接口, 传输的数据格式为 JSON, 具体格式参照 `数据格式`
+一节的定义.
+ 
+#### 数据格式
+ 
+```javascript
+{
+    "type": "Underwriting",         // 通知类型
+    "proposal_id": "ongnikcat",      // 投保单号
+    "out_trade_no": "onedarttuo",   // 商户订单号
+    "notification_id": "diksat",          // 通知 id
+    "success": true,                // 是否执行成功
+    "data": {                       // 数据
+    }
+}
+```
+ 
+<a name="propose_notice"></a>
+### 投保结果通知
+ 
+#### 通知类型
+ 
+    Propose
+ 
+#### 通知数据
+ 
+```javascript
+{
+    "type": "Propose",         // 通知类型
+    "proposal_id": "ongnikcat",      // 投保单号
+    "out_trade_no": "onedarttuo",   // 商户订单号
+    "notification_id": "diksat",          // 通知 id
+    "success": true,                // 是否执行成功
+    "data": {                       // 数据
+        "tracking_no": "ongnikcart",        // 跟踪单号
+        "ic_cdoe": "pingan",                // 保险公司代码
+        "comment": "备注",                  // 备注信息
+        "message": "消息",                  // 消息
+ 
+        // 以下字段仅在成功时返回
+        "is_uw": true,                                  // 是否提交核保
+        "uw_notification_id": "onnoitaciton",           // 核保通知 id
+ 
+        "biz_info": {                                   // 商业险信息
+            "no": "",                                   // 保险公司商业险投保单号
+            "detail": [                                 // 报价详情
+                {
+                    "amount": "41452",                  // 保额
+                    "code": "pilfer",                   // 险种代码
+                    "insured": true,                    // 是否投保
+                    "premium": "290.15",                // 保费
+                    "valid": true,                      // 报价是否有效(如该字段没有则默认为有效)
+                }
+            ],
+            "discount": "0.9000",                   // 折扣
+            "start_date": "2016-07-29",             // 起保日期
+            "end_date": "2017-07-15",               // 止保日期
+            "total": "3262.14"                      // 总保费
+        },
+        "force_info": {                             // 交强险信息
+            "no": "",                               // 保险公司交强险投保单号
+            "discount": "0.7000",                   // 折扣率
+            "start_date": "2016-07-29",             // 起保日期
+            "end_date": "2017-07-15",               // 止保日期
+            "premium": "640.03",                    // 交强险保费
+            "tax": "250.00"                         // 车船税
+        },
+        "vehicle": {                            // 报价所使用车辆信息
+            "license_no": "冀AD2756",           // 车牌号码
+            "license_type": "02",               // 号牌种类
+            "owner": "王化",                    // 车主姓名
+            "frame_no": "LS4ASB3E8DA668826",    // 车架号
+            "engine_no": "ETA1014632",          // 发动机号
+            "enroll_date": "2015-12-24",        // 初登日期
+            "fuel_type": "0",                   // 燃料类型
+            "seat_count": "8",                  // 座位数
+            "vehicle_nature": "211"             // 车辆使用性质
+        }
+    }
+}
+```
+ 
+<a name="uw_notice"></a>
+### 核保结果通知
+ 
+#### 通知类型
+ 
+    Underwriting
+ 
+#### 通知数据
+TODO
+ 
+ 
+<a name="modify_phone_notice"></a>
+### 修改投保人手机号结果通知
+ 
+#### 通知类型
+ 
+    ModifyPhone
+ 
+#### 通知数据
+ 
+TODO
+ 
+<a name="verify_id_code_notice"></a>
+### 验证身份证验证码结果通知
+ 
+#### 通知类型
+ 
+    VerifyIDCode
+ 
+#### 通知数据
+ 
+TODO
+ 
+<a name="sync_notice"></a>
+### 同步结果通知
+ 
+#### 通知类型
+ 
+    Sync
+ 
+#### 通知数据
+ 
+TODO
+ 
+<a name="remove_app_notice"></a>
+### 删除保单结果通知
+ 
+#### 通知类型
+ 
+    RemoveApp
+ 
+#### 通知数据
+ 
+TODO
+ 
+## DTO
+ 
+<a name="vehicle_dto"></a>
+### VehicleDTO
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| license\_no | string    | 是       | 车牌号码                                 |
+| owner     | string      | 是       | 车主姓名                                 |
+| license\_type | string  | 是       | 号牌种类, 参见 [1.2 获取元数据](#meta)   |
+| fuel\_type   | string   | 是       | 燃料种类, 参见[1.2 获取元数据](#meta) |
+| frame\_no     | string  | 是       | 车架号                                   |
+| engine\_no    | string  | 是       | 发动机号                                 |
+| enroll\_date  | DateString    | 否       | 初登日期, 格式为: YYYY-mm-dd       |
+| seat\_count   | integer | 否       | 核定载客数                               |
+| model\_code    | string | 否       | 车型代码                                 |
+| vehicle\_name  | string | 否       | 品牌型号                                 |
+| purchase\_price| string | 否       | 新车购置价, 格式为数字                   |
+| tax\_price     | string | 否       | 新车购置价(含税), 格式为数字             |
+ 
+ 
+<a name="selected_model_dto"></a>
+### SelectedModelDTO
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| vehicle\_data\_id | string | 是    | 所选车型 id                              |
+| auto\_model\_code | string | 否    | 所选车型特殊编码                         |
+ 
+ 
+<a name="selection_dto"></a>
+### SelectionDTO
+ 
+报价险种格式是险种代码对应选择的投保金额, 如下:
+ 
+```javascript
+{
+    "damage": 1             // 投保机动车损失险
+    "exempt_damage": 1,     // 投保机动车损失险不计免赔
+}
+```
+ 
+> 部分险种如车损险可以根据一定范围进行浮动, 如不浮动则保额传 1, 此时会根据所选车型确定保额.
+ 
+<a name="extend_dto"></a>
+### ExtendDTO
+ 
+扩展信息为一个对象, 可以存放任意的值, 例如:
+ 
+```javascript
+{
+    "list": [1, 2, "3"],
+    "object": {
+        "list": [],
+        "number": 1,
+    },
+ 
+    // 以下是一些有意义的扩展性信息
+ 
+ 
+    // 以下是一些保留扩展信息
+    "city_code": "110100",
+    "seat_count": 5,
+}
+```
+ 
+<a name="privy_dto"></a>
+### PrivyDTO
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| name      | string      | 是       | 关系人姓名                               |
+| holder\_type | string   | 是       | 持有人类型代码, 参见[1.2 获取元数据](#meta) |
+| document\_type | string | 是       | 关系人证件类型代码 , 参见[1.2 获取元数据](#meta) |
+| document\_no   | string | 是       | 关系人证件号码                           |
+| phone          | string | 关系人类型为个人时必选 | 关系人手机号               |
+ 
+**所有非必选字段若不填写则依据参照的任务进行填充**
+ 
+<a name="id_dto"></a>
+### IDDTO
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| id\_no    | string      | 是       | 身份证号码                               |
+| name      | string      | 是       | 姓名                                     |
+| nation    | string      | 是       | 民族                                     |
+| issue\_date| DateString | 是       | 发证日期, 格式 YYYY-mm-dd                |
+| valid\_date | DateString |非长期有效必选| 有效日期, 格式 YYYY-MM-DD           |
+| valid\_forever | boolean | 否 | 是否长期有效, 默认为 false                    |
+| address   | string      | 是       | 地址                                     |
+| issuer    | string      | 是       | 发证机关                                 |
+ 
+ 
+<a name="ic_dto"></a>
+ 
+### ICDTO
+保险公司信息
+ 
+| 字段名    | 类型        | 是否必选 | 描述                                     |
+|-----------|-------------|----------|------------------------------------------|
+| code      | string      | 是       | 保险公司代码                             |
+| account\_id | string    | 否       | 使用的账号 id, 若不提供则使用默认的      |
+ 
+若没有对应的机构没有指定默认的账号 id 则不进行该保险公司的报价,
+参见 [1.3 提交保险公司账号](#account).
+ 

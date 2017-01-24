@@ -13,7 +13,7 @@ class HomeController extends Controller{
 
     public function index(){
         $parsedown=new Parsedown();
-        $a='#M My article
+        $a='# My article
  Welcome to my article,
 * Point one
 * Point two
@@ -26,6 +26,7 @@ echo $x;
 ?>
 ```
 Here is some echo `\'inline code\'`;';
+        $a=require public_path('jdy.txt');
         echo $parsedown->text($a);
         var_dump("sdsdd");
     }
