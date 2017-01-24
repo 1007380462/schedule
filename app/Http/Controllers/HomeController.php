@@ -31,7 +31,7 @@ Here is some echo `\'inline code\'`;';
         $c='<style> pre code{background-color: rgba(46, 79, 37, 0.6)}</style>';
         $b.=$c;
         return view('blog.index',['text'=>$b]);
-        echo $b;
+        //echo $b;
         //var_dump("sdsdd");
     }
 }

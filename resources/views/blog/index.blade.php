@@ -69,8 +69,9 @@
 
 
             <div class="content">
+                {!! $text !!}
                 <div class="title m-b-md">
-                    {!! $text !!}
+
                 </div>
 
             </div>
