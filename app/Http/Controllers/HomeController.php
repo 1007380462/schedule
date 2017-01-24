@@ -27,7 +27,7 @@ echo $x;
 ```
 Here is some echo `\'inline code\'`;';
         $a=file_get_contents(public_path('jdy.txt'));
-        echo $parsedown->text($a);
+        echo Parsedown::instance()->text($a);
         var_dump("sdsdd");
     }
 }
