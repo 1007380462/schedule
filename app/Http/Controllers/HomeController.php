@@ -36,13 +36,13 @@ Here is some echo `\'inline code\'`;';
         $firstCharacter=substr($lineStr,0,1);
         if($firstCharacter=='#'){
             /*express this is h1*/
-            $anchor='<p><a name="2"></a></p>';
+            $anchor='<p><a name="$time"></a></p>';
             $fileContent.=$anchor;
             $fileContent.=$lineStr;
         }
         if($firstCharacter=='##'){
             /*express this is h2*/
-            $anchor='<p><a name="2"></a></p>';
+            $anchor='<p><a name="$time"></a></p>';
             $fileContent.=$anchor;
             $fileContent.=$lineStr;
         }
