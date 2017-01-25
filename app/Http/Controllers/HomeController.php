@@ -42,7 +42,7 @@ Here is some echo `\'inline code\'`;';
         }
         if($firstCharacter=='##'){
             /*express this is h2*/
-            $anchor='<p><a name="$time"></a></p>';
+            $anchor='<p><a name='.$time.'></a></p>';
             $fileContent.=$anchor;
             $fileContent.=$lineStr;
         }
