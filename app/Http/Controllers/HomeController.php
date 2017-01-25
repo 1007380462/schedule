@@ -27,11 +27,33 @@ echo $x;
 ```
 Here is some echo `\'inline code\'`;';
         $a=file_get_contents(public_path('jdy.txt'));
+
+        $fileContent='';
+        $time=0;
+        /*get directory of file*/
+        $handle=fopen(public_path('jdy.txt'));
+        $lineStr=fgets($handle);
+        $firstCharacter=substr($lineStr,0,1);
+        if($firstCharacter=='#'){
+            /*express this is h1*/
+            $anchor='<a name="$time"></a>';
+            $fileContent.=$anchor;
+            $fileContent.=$lineStr;
+        }
+        if($firstCharacter=='##'){
+            /*express this is h2*/
+        }
+
+        if($firstCharacter=='###'){
+            /*express this is h3*/
+        }
+        if($firstCharacter=='####'){
+            /*express this is h4*/
+        }
+
         $b= Parsedown::instance()->text($a);
-        /*$c='<style> pre code{background-color: rgba(46, 79, 37, 0.6)}</style>';
-        $b.=$c;*/
+
         return view('blog.index',['text'=>$b]);
-        //echo $b;
-        //var_dump("sdsdd");
+
     }
 }
