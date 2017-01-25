@@ -71,7 +71,7 @@ Here is some echo `\'inline code\'`;';
 
         }
 
-        $lineStr=fgets($handle);
+       // $lineStr=fgets($handle);
         $b= Parsedown::instance()->text($lineStr);
 
         return view('blog.index',['text'=>$b]);
