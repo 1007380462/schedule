@@ -32,7 +32,7 @@ Here is some echo `\'inline code\'`;';
         $time=0;
         /*get directory of file*/
         $handle=fopen(public_path('jdy.txt'),'r');
-
+        $lineStr=fgets($handle);
         while(! feof($handle)){
         $lineStr=fgets($handle);
         $firstCharacter=substr($lineStr,0,1);
