@@ -36,12 +36,15 @@ Here is some echo `\'inline code\'`;';
         $firstCharacter=substr($lineStr,0,1);
         if($firstCharacter=='#'){
             /*express this is h1*/
-            $anchor='<a name="$time"></a>';
+            $anchor='<p><a name="2"></a></p>';
             $fileContent.=$anchor;
             $fileContent.=$lineStr;
         }
         if($firstCharacter=='##'){
             /*express this is h2*/
+            $anchor='<p><a name="2"></a></p>';
+            $fileContent.=$anchor;
+            $fileContent.=$lineStr;
         }
 
         if($firstCharacter=='###'){
@@ -51,7 +54,7 @@ Here is some echo `\'inline code\'`;';
             /*express this is h4*/
         }
 
-        $b= Parsedown::instance()->text($a);
+        $b= Parsedown::instance()->text($fileContent);
 
         return view('blog.index',['text'=>$b]);
 
