@@ -33,6 +33,7 @@ Here is some echo `\'inline code\'`;';
         /*get directory of file*/
         $handle=fopen(public_path('jdy.txt'),'r');
         $lineStr=fgets($handle);
+
         while(! feof($handle)){
         $lineStr=fgets($handle);
         $firstCharacter=substr($lineStr,0,1);
@@ -71,7 +72,8 @@ Here is some echo `\'inline code\'`;';
 
         }
 
-       // $lineStr=fgets($handle);
+        $handle=fopen(public_path('jdy.txt'),'r');
+        $lineStr=fgets($handle);
         $b= Parsedown::instance()->text($lineStr);
 
         return view('blog.index',['text'=>$b]);
