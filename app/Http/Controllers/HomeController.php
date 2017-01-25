@@ -37,41 +37,42 @@ Here is some echo `\'inline code\'`;';
         $lineStr=fgets($handle);
         $firstCharacter=substr($lineStr,0,1);
         if($firstCharacter=='#'){
-            /*express this is h1*/
-            $anchor='<p><a name='.$time.'></a></p>';
-            $fileContent.=$anchor;
+            if($firstCharacter=='#'){
+                /*express this is h1*/
+                $anchor='<p><a name='.$time.'></a></p>';
+                $fileContent.=$anchor;
+                $fileContent.=$lineStr;
+                $time++;
+            }
+            if(substr($lineStr,0,2)=='##'){
+                /*express this is h2*/
+                $anchor='<p><a name='.$time.'></a></p>';
+                $fileContent.=$anchor;
+                $fileContent.=$lineStr;
+                $time++;
+            }
+            if(substr($lineStr,0,3)=='###'){
+                /*express this is h3*/
+                $anchor='<p><a name='.$time.'></a></p>';
+                $fileContent.=$anchor;
+                $fileContent.=$lineStr;
+                $time++;
+            }
+            if(substr($lineStr,0,4)=='####'){
+                /*express this is h4*/
+                $anchor='<p><a name='.$time.'></a></p>';
+                $fileContent.=$anchor;
+                $fileContent.=$lineStr;
+                $time++;
+            }
+        }else{
             $fileContent.=$lineStr;
-            $time++;
         }
-        if($firstCharacter=='##'){
-            /*express this is h2*/
-            $anchor='<p><a name='.$time.'></a></p>';
-            $fileContent.=$anchor;
-            $fileContent.=$lineStr;
-            $time++;
-        }
-
-        if($firstCharacter=='###'){
-            /*express this is h3*/
-            $anchor='<p><a name='.$time.'></a></p>';
-            $fileContent.=$anchor;
-            $fileContent.=$lineStr;
-            $time++;
-        }
-        if($firstCharacter=='####'){
-            /*express this is h4*/
-            $anchor='<p><a name='.$time.'></a></p>';
-            $fileContent.=$anchor;
-            $fileContent.=$lineStr;
-            $time++;
-        }
-
-        $fileContent.=$lineStr;
 
         }
 
-
-        $b= Parsedown::instance()->text($fileContent);
+        $lineStr=fgets($handle);
+        $b= Parsedown::instance()->text($lineStr);
 
         return view('blog.index',['text'=>$b]);
 
