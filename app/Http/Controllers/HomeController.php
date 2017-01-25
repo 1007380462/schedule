@@ -32,6 +32,8 @@ Here is some echo `\'inline code\'`;';
         $time=0;
         /*get directory of file*/
         $handle=fopen(public_path('jdy.txt'),'r');
+
+        while(! feof($handle)){
         $lineStr=fgets($handle);
         $firstCharacter=substr($lineStr,0,1);
         if($firstCharacter=='#'){
@@ -39,20 +41,35 @@ Here is some echo `\'inline code\'`;';
             $anchor='<p><a name='.$time.'></a></p>';
             $fileContent.=$anchor;
             $fileContent.=$lineStr;
+            $time++;
         }
         if($firstCharacter=='##'){
             /*express this is h2*/
             $anchor='<p><a name='.$time.'></a></p>';
             $fileContent.=$anchor;
             $fileContent.=$lineStr;
+            $time++;
         }
 
         if($firstCharacter=='###'){
             /*express this is h3*/
+            $anchor='<p><a name='.$time.'></a></p>';
+            $fileContent.=$anchor;
+            $fileContent.=$lineStr;
+            $time++;
         }
         if($firstCharacter=='####'){
             /*express this is h4*/
+            $anchor='<p><a name='.$time.'></a></p>';
+            $fileContent.=$anchor;
+            $fileContent.=$lineStr;
+            $time++;
         }
+
+        $fileContent.=$lineStr;
+
+        }
+
 
         $b= Parsedown::instance()->text($fileContent);
 
