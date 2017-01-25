@@ -15,9 +15,13 @@
 
 
             <div class="content">
-                {!! $text !!}
-                <div class="title m-b-md">
 
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            {!! $text !!}
+                        </div>
+                    </div>
                 </div>
 
             </div>
