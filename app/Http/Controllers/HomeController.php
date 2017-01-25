@@ -31,7 +31,7 @@ Here is some echo `\'inline code\'`;';
         $fileContent='';
         $time=0;
         /*get directory of file*/
-        $handle=fopen(public_path('jdy.txt'));
+        $handle=fopen(public_path('jdy.txt'),'r');
         $lineStr=fgets($handle);
         $firstCharacter=substr($lineStr,0,1);
         if($firstCharacter=='#'){
