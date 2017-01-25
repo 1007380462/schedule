@@ -24,6 +24,17 @@
                     </div>
                 </div>
 
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="span2">
+                        </div>
+                        <div class="span8">
+                            {!! $text !!}
+                        </div>
+                        <div class="span2">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <table class="table table-striped">
