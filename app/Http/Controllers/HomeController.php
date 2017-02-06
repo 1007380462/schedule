@@ -40,29 +40,28 @@ Here is some echo `\'inline code\'`;';
             if(substr($lineStr,0,4)=='####'){
                 /*this is h4*/
                 $anchor='<p><a name='.$time.'></a></p>';
-                $fileContent.=$anchor;
+                $fileContent.=$anchor."\n";
                 $fileContent.=$lineStr;
-                $fileContent.='\n';
                 $time++;
             }
             if(substr($lineStr,0,3)=='###'&&substr($lineStr,0,4)!='####'){
                 /*this is h3*/
                 $anchor='<p><a name='.$time.'></a></p>';
-                $fileContent.=$anchor;
+                $fileContent.=$anchor."\n";
                 $fileContent.=$lineStr;
                 $time++;
             }
             if(substr($lineStr,0,2)=='##'&&substr($lineStr,0,3)!='###'){
                 /*this is h2*/
                 $anchor='<p><a name='.$time.'></a></p>';
-                $fileContent.=$anchor;
-                $fileContent.=$lineStr;
+                $fileContent.=$anchor."\n";
+                $fileContent.=$lineStr;	
                 $time++;
             }
             if(substr($lineStr,0,1)=='#'&&substr($lineStr,0,2)!='##'){
                 /*this is h1*/
                 $anchor='<p><a name='.$time.'></a></p>';
-                $fileContent.=$anchor;
+                $fileContent.=$anchor."\n";
                 $fileContent.=$lineStr;
                 $time++;
             }
