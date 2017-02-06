@@ -12,7 +12,6 @@ class HomeController extends Controller{
     }
 
     public function index(){
-        $parsedown=new Parsedown();
         $a='# My article
  Welcome to my article,
 * Point one
@@ -32,51 +31,53 @@ Here is some echo `\'inline code\'`;';
         $time=0;
         /*get directory of file*/
         $handle=fopen(public_path('jdy.txt'),'r');
-        $lineStr=fgets($handle);
 
+        /*add a anchor to each title and then use javascript to Automatically generate directory*/
         while(! feof($handle)){
         $lineStr=fgets($handle);
-        $firstCharacter=substr($lineStr,0,1);
-        if($firstCharacter=='#'){
-            if($firstCharacter=='#'){
-                /*express this is h1*/
-                $anchor='<p><a name='.$time.'></a></p>';
-                $fileContent.=$anchor;
-                $fileContent.=$lineStr;
-                $time++;
-            }
-            if(substr($lineStr,0,2)=='##'){
-                /*express this is h2*/
-                $anchor='<p><a name='.$time.'></a></p>';
-                $fileContent.=$anchor;
-                $fileContent.=$lineStr;
-                $time++;
-            }
-            if(substr($lineStr,0,3)=='###'){
-                /*express this is h3*/
-                $anchor='<p><a name='.$time.'></a></p>';
-                $fileContent.=$anchor;
-                $fileContent.=$lineStr;
-                $time++;
-            }
+        if(substr($lineStr,0,1)=='#'){
+
             if(substr($lineStr,0,4)=='####'){
-                /*express this is h4*/
+                /*this is h4*/
+                $anchor='<p><a name='.$time.'></a></p>';
+                $fileContent.=$anchor;
+                $fileContent.=$lineStr;
+                $fileContent.='\n';
+                $time++;
+            }
+            if(substr($lineStr,0,3)=='###'&&substr($lineStr,0,4)!='####'){
+                /*this is h3*/
                 $anchor='<p><a name='.$time.'></a></p>';
                 $fileContent.=$anchor;
                 $fileContent.=$lineStr;
                 $time++;
             }
+            if(substr($lineStr,0,2)=='##'&&substr($lineStr,0,3)!='###'){
+                /*this is h2*/
+                $anchor='<p><a name='.$time.'></a></p>';
+                $fileContent.=$anchor;
+                $fileContent.=$lineStr;
+                $time++;
+            }
+            if(substr($lineStr,0,1)=='#'&&substr($lineStr,0,2)!='##'){
+                /*this is h1*/
+                $anchor='<p><a name='.$time.'></a></p>';
+                $fileContent.=$anchor;
+                $fileContent.=$lineStr;
+                $time++;
+            }
+
         }else{
             $fileContent.=$lineStr;
         }
 
         }
 
-        $handle=fopen(public_path('jdy.txt'),'r');
-        $lineStr=fgets($handle);
-        $b= Parsedown::instance()->text($lineStr);
+        fclose($handle);
+        $b= Parsedown::instance()->text($fileContent);
 
         return view('blog.index',['text'=>$b]);
 
     }
+
 }
