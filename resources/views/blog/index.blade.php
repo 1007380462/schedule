@@ -20,6 +20,9 @@
                             {!! $text !!}
                         </div>
                     </div>
+
+
+
                 </div>
 
             </div>
@@ -33,6 +36,11 @@
                 </button>
                 <div id="jstree_demo_div">
                 </div>
+
+                <div id="tree">
+
+                </div>
+
                 <div id="jstree_demo_div_instead" hidden>
                     <h6 style="margin-top: 0px; margin-bottom: 0px;">
                         <button type="button" id="sidebar_unfold">
@@ -80,11 +88,6 @@
             $('#jstree_demo_div').html(str);
         </script>
 
-        {{--jstrss file https://www.jstree.com/--}}
-        <link rel="{{asset('jsTree/dist/themes/default-dark/style.min.css')}}">
-        <script src="{{asset('jsTree/dist/jstree.min.js')}}"></script>
-
-
         <script type="text/javascript">
 
             $("#sidebar_fold").on('click', function () {
@@ -97,6 +100,27 @@
                 $("#jstree_demo_div").removeAttr('hidden', 'true');
                 $("#jstree_demo_div_instead").attr('hidden', 'true');
                 $("#sidebar_fold").removeAttr('hidden');
+            });
+        </script>
+
+        {{--fancytree--}}
+        <script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+        <link href="{{asset('fancytree/dist/skin-win8/ui.fancytree.min.css')}}" rel="stylesheet">
+        <script src="{{asset('fancytree/dist/jquery.fancytree-all.min.js')}}"></script>
+        <script type="text/javascript">
+            $(function(){
+                // Create the tree inside the <div id="tree"> element.
+                $("#tree").fancytree({
+                    source:[
+                        {title: "Node 1", key: "1"},
+                        {title: "Folder 2", key: "2", folder: true, children: [
+                            {title: "Node 2.1", key: "3"},
+                            {title: "Node 2.2", key: "4"}
+                        ]}
+                    ],
+                    checkbox:true,
+                });
             });
         </script>
 
