@@ -16,26 +16,7 @@
 
                 <div class="container">
                     <div class="row">
-                        <div class="span4">
-                            <aside id="sidebar" class="sticky" style="top: 20px;">
-                                <div class="inside">
-                                    <button type="button" id="sidebar_fold">
-                                        <b>hit</b>
-                                    </button>
-                                    <div id="jstree_demo_div">
-                                    </div>
-                                    <div id="jstree_demo_div_instead" hidden>
-                                        <h6 style="margin-top: 0px; margin-bottom: 0px;">
-                                            <button type="button" id="sidebar_unfold">
-                                                <b>hit me</b>
-                                            </button>
-                                        </h6>
-                                    </div>
-                                </div>
-                            </aside>
-                        </div>
-
-                        <div class="span8">
+                        <div class="span12">
                             {!! $text !!}
                         </div>
                     </div>
@@ -44,6 +25,23 @@
             </div>
 
         </div>
+
+        <aside id="sidebar" class="sticky" style="top: 20px;">
+            <div class="inside">
+                <button type="button" id="sidebar_fold">
+                    <b>hit</b>
+                </button>
+                <div id="jstree_demo_div">
+                </div>
+                <div id="jstree_demo_div_instead" hidden>
+                    <h6 style="margin-top: 0px; margin-bottom: 0px;">
+                        <button type="button" id="sidebar_unfold">
+                            <b>hit me</b>
+                        </button>
+                    </h6>
+                </div>
+            </div>
+        </aside>
 
 
         {{--baidu condensed or compressed version--}}
@@ -81,6 +79,10 @@
 
             $('#jstree_demo_div').html(str);
         </script>
+
+        {{--jstrss file https://www.jstree.com/--}}
+        <link rel="{{asset('jsTree/dist/themes/default-dark/style.min.css')}}">
+        <script src="{{asset('jsTree/dist/jstree.min.js')}}"></script>
 
 
         <script type="text/javascript">
