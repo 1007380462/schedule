@@ -30,11 +30,21 @@
         <aside id="sidebar" class="sticky" style="top: 20px;">
 
             <div class="inside">
+                <button type="button" id="sidebar_fold">
+			<b>hit</b>
+		</button>
                 <div id="jstree_demo_div">
 
                 </div>
-                <h2>Title 1</h2>
-                <p>Lorem ipsum enim a mi pulvinar aliquet.</p>
+
+                <div id="jstree_demo_div_instead" hidden>
+                  <h6 style="bold margin-top: 0px; margin-bottom: 0px;">
+			<button type="button" id="sidebar_unfold">
+			   <b>hit me</b>
+			</button>
+		  </h6>
+                </div>
+
             </div>
 
         </aside>
@@ -78,25 +88,43 @@
 
         {{--jstrss file https://www.jstree.com/--}}
         <link rel="{{asset('jsTree/dist/themes/default-dark/style.min.css')}}">
-        <script src="{{asset('jsTree/jstree.min.js')}}"></script>
+        <script src="{{asset('jsTree/dist/jstree.min.js')}}"></script>
         <script type="text/javascript">
             $(function () {
                 //create an instance when the dom is ready
                 $('#jstree_demo_div').jstree();
                 //bind to events triggered on the tree
+/*
                 $('#jstree_demo_div').on("changed.jstree", function (e, data) {
                     console.log(data.selected);
                 });
+*/
                 //interact with the tree-either way is ok
+/*
                 $('button').on('click', function () {
                     $('#jstree').jstree(true).select_node('child_node_1');
                     $('#jstree').jstree('select_node', 'child_node_1');
                     $.jstree.reference('#jstree').select_node('child_node_1');
                 });
+*/
             });
 
-
         </script>
+
+<script type="text/javascript">
+
+$("#sidebar_fold").on('click',function(){
+$("#jstree_demo_div_instead").removeAttr('hidden');
+$("#jstree_demo_div").attr('hidden','true');
+$("#sidebar_fold").attr('hidden','true');
+});
+
+$("#sidebar_unfold").on('click',function(){
+$("#jstree_demo_div").removeAttr('hidden','true');
+$("#jstree_demo_div_instead").attr('hidden','true');
+$("#sidebar_fold").removeAttr('hidden');
+});
+</script>
 
     </body>
 </html>
