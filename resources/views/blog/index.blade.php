@@ -43,10 +43,7 @@
 
         </aside>
 
-    <script type="text/javascript">
-        var text=$('h1').innerText();
-        console.log()
-    </script>
+ 
         {{--baidu condensed or compressed version--}}
         <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
         <script src="{{asset('js/stickySidebar/stickySidebar.js')}}"></script>
@@ -57,6 +54,32 @@
             $('#sidebar').stickySidebar();
         })
     </script>
+
+<script type="text/javascript">
+var i=0;
+var str='';
+var s=null;
+while(1){
+ s=$(":header").eq(i).text();
+
+if(s==null){
+console.log('null');
+break;
+}
+if(typeof(s) == "undefined"){
+break;
+}
+if(s==""){
+break;
+}
+
+  str=str+'<a href="#'+i+'">'+s+'</a>\n';
+  i++;
+
+}
+console.log(str);
+$('.inside').html(str);
+</script>
 
     </body>
 </html>
