@@ -141,8 +141,14 @@ Here is some echo `\'inline code\'`;';
 
         fclose($handle);
         $b = Parsedown::instance()->text($fileContent);
-
-        return view('blog.fixTheNavBar', ['text' => $b]);
+        $str = '[
+                {"title": "Node 1", "key": "1"},
+                {"title": "Folder 2", "key": "2", "folder": true, "children": [
+                    {"title": "Node 2.1", "key": "3"},
+                    {"title": "Node 2.2", "key": "4"}
+                ]}
+                    ]';
+        return view('blog.fixTheNavBar', ['text' => $b,'tree'=>$str]);
 
     }
 
@@ -151,11 +157,22 @@ Here is some echo `\'inline code\'`;';
     }
 
     public function adjustNodePlace(Request $request){
+        $str = '[
+                {"title": "Node 1", "key": "1"},
+                {"title": "Folder 2", "key": "2", "folder": true, "children": [
+                    {"title": "Node 2.1", "key": "3"},
+                    {"title": "Node 2.2", "key": "4"}
+                ]}
+                    ]';
+        $str=json_decode($str);  //get a array
+
 
     }
+
     public function addNewNode(Request $request){
 
     }
+
 
     public function deleteNode(Request $request){
 
