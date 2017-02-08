@@ -12,7 +12,29 @@
     <body>
         <div class="flex-center position-ref full-height">
 
-            <div class="content">
+            <aside id="sidebar" class="sticky" style="top: 20px;">
+                <div class="inside">
+                    <button type="button" id="sidebar_fold">
+                        <b>hit</b>
+                    </button>
+                    <div id="jstree_demo_div">
+                    </div>
+
+                    <div id="tree">
+
+                    </div>
+
+                    <div id="jstree_demo_div_instead" hidden>
+                        <h6 style="margin-top: 0px; margin-bottom: 0px;">
+                            <button type="button" id="sidebar_unfold">
+                                <b>hit me</b>
+                            </button>
+                        </h6>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="content" id="content">
 
                 <div class="container">
                     <div class="row">
@@ -22,32 +44,11 @@
                     </div>
 
                 </div>
-
             </div>
 
         </div>
 
-        <aside id="sidebar" class="sticky" style="top: 20px;">
-            <div class="inside">
-                <button type="button" id="sidebar_fold">
-                    <b>hit</b>
-                </button>
-                <div id="jstree_demo_div">
-                </div>
 
-                <div id="tree">
-
-                </div>
-
-                <div id="jstree_demo_div_instead" hidden>
-                    <h6 style="margin-top: 0px; margin-bottom: 0px;">
-                        <button type="button" id="sidebar_unfold">
-                            <b>hit me</b>
-                        </button>
-                    </h6>
-                </div>
-            </div>
-        </aside>
 
         <footer style="height: 200px">
 

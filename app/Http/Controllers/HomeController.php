@@ -79,4 +79,19 @@ Here is some echo `\'inline code\'`;';
 
     }
 
+    public function modifyNodeName(Request $request){
+
+    }
+
+    public function adjustNodePlace(Request $request){
+
+    }
+    public function addNewNode(Request $request){
+
+    }
+
+    public function deleteNode(Request $request){
+
+    }
+
 }
