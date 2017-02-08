@@ -11,32 +11,19 @@
     </head>
 
     <body>
-       <header>JT</header>
+      
 
        <div class="container-fluid">
            <div class="row">
                <div class="col-sm-3 col-lg-2">
                    <nav class="navbar navbar-default navbar-fixed-side">
-                       <!-- normal collapsible navbar markup -->
-                   </nav>
-               </div>
-               <div class="col-sm-9 col-lg-10">
-                   <!-- your page content -->
-               </div>
-           </div>
-       </div>
-
-                <div class="container">
-
-                    <div class="row">
-
-                        <div class="span4" style="position: fixed;height: 100% !important;">
-                            <aside id="sidebar" class="sticky" style="top: 20px;">
-                                <div class="inside" style="position:relative;width:220px;height:350px; overflow:auto;overflow-x:hidden">
+                         <div class="" style="position: fixed;height: 100% !important;">
+                            <aside id="sidebar" class="sticky" style="top: 20px;height:100%">
+                                <div class="inside" style="position:relative;width:220px;height:100%; overflow:auto;">
                                     <button type="button" id="sidebar_fold">
                                         <b>hit</b>
                                     </button>
-                                    <div id="jstree_demo_div">
+                                    <div id="jstree_demo_div" hidden>
                                     </div>
 
                                     <div id="tree">
@@ -53,16 +40,15 @@
                                 </div>
                             </aside>
                         </div>
-
-                        <div class="span8">
-                            {!! $text !!}
-                        </div>
-                    </div>
-
-                </div>
-
-
-
+                       <!-- normal collapsible navbar markup -->
+                   </nav>
+               </div>
+               <div class="col-sm-9 col-lg-10">
+                   {!! $text !!}
+                   <!-- your page content -->
+               </div>
+           </div>
+       </div>
 
         <footer style="">
 
@@ -71,16 +57,6 @@
         {{--baidu condensed or compressed version--}}
         <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
 
-       {{--Side navigation http://www.htmleaf.com/jQuery/Menu-Navigation/201503011440.html--}}
-        <script src="{{asset('js/stickySidebar/stickySidebar.js')}}"></script>
-        <link rel="stylesheet" href="{{asset('css/stickySidebar/style.css')}}">
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('#sidebar').stickySidebar({
-                    footerThreshold: 200,
-                });
-            })
-        </script>
 
        {{--put the title into the side navigation--}}
         <script type="text/javascript">
