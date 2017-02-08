@@ -10,10 +10,12 @@
     </head>
 
     <body>
+       <header>JT</header>
+
         <div class="flex-center position-ref full-height">
 
             <aside id="sidebar" class="sticky" style="top: 20px;">
-                <div class="inside">
+                <div class="inside" style="position:relative;width:220px;height:95%; overflow:auto">
                     <button type="button" id="sidebar_fold">
                         <b>hit</b>
                     </button>
