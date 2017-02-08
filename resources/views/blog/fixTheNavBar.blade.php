@@ -275,7 +275,8 @@
             };
             $(function(){
                 // Initialize Fancytree
-                var tree="{{$tre}}";
+                var tree='{!! $tree !!}';
+                  console.log(tree);
                 $("#tree").fancytree({
                     extensions: ["dnd", "edit", "glyph"],
                     checkbox: true,
@@ -354,7 +355,7 @@
                     },
                     glyph: glyph_opts,
                     selectMode: 2,
-                    source:tree,
+                    source:{!! $tree !!},
                     toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 400 },
 
                     lazyLoad: function(event, data) {
