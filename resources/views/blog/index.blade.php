@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{{asset('css/FontAwesome/font-awesome.min.css')}}">
         <link rel="stylesheet" href="{{asset('css/app.css')}}">
-        <title>Laravel</title>
+        <title>JT</title>
     </head>
 
     <body>
@@ -20,8 +20,6 @@
                             {!! $text !!}
                         </div>
                     </div>
-
-
 
                 </div>
 
@@ -51,15 +49,21 @@
             </div>
         </aside>
 
+        <footer style="height: 200px">
+
+        </footer>
 
         {{--baidu condensed or compressed version--}}
         <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
-        <script src="{{asset('js/stickySidebar/stickySidebar.js')}}"></script>
-       <link rel="stylesheet" href="{{asset('css/stickySidebar/style.css')}}">
+
        {{--Side navigation http://www.htmleaf.com/jQuery/Menu-Navigation/201503011440.html--}}
+        <script src="{{asset('js/stickySidebar/stickySidebar.js')}}"></script>
+        <link rel="stylesheet" href="{{asset('css/stickySidebar/style.css')}}">
         <script type="text/javascript">
             $(document).ready(function () {
-                $('#sidebar').stickySidebar();
+                $('#sidebar').stickySidebar({
+                    footerThreshold: 200,
+                });
             })
         </script>
 
@@ -103,6 +107,7 @@
             });
         </script>
 
+
         {{--fancytree--}}
 <!--
         <link href="{{asset('fancytree/dist/skin-lion/ui.fancytree.min.css')}}" rel="stylesheet">
@@ -114,7 +119,7 @@
      <script src="{{asset('fancytree/dist/src/jquery.fancytree.edit.js')}}"></script>
 -->
 
-<script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
@@ -255,6 +260,7 @@
   });
 </script>
 -->
+
         {{--glyph fonts ,bootstrap and drag drop--}}
         <script type="text/javascript">
             glyph_opts = {
@@ -281,6 +287,7 @@
                     extensions: ["dnd", "edit", "glyph"],
                     checkbox: true,
                     dnd: {
+                        scroll:true,
                         autoExpandMS: 400,
                         focusOnClick: true,
                         preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
@@ -309,11 +316,47 @@
                              */
                             return true;
                         },
+                        dragExpand: function(node, data) {
+                            // return false to prevent auto-expanding data.node on hover
+                        },
+                        dragOver: function(node, data) {
+                        },
+                        dragLeave: function(node, data) {
+                        },
+                        dragStop: function(node, data) {
+                        },
                         dragDrop: function(node, data) {
                             /** This function MUST be defined to enable dropping of items on
                              *  the tree.
                              */
                             data.otherNode.moveTo(node, data.hitMode);
+                            console.log(data);
+                            console.log(node);
+
+                            console.log(data.node.key);
+                            console.log(data.otherNode.key);
+
+                            $.ajax({
+                                url: 'index.php',
+                                type: 'POST',
+                                data: {destination: data.node.key, node: data.otherNode.key },
+                                dataType: 'json',
+                             // cache:false,
+                                async:true,
+                            //  timeout:1000,
+                                beforeSend:function () {
+                                    
+                                },
+                                complete:function () {
+
+                                },
+                                success:function (data) {
+
+                                },
+                                error:function (xhr) {
+
+                                },
+                            });
                         }
                     },
                     glyph: glyph_opts,
@@ -334,5 +377,6 @@
 
             });
         </script>
+
     </body>
 </html>
