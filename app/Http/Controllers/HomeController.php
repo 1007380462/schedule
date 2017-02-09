@@ -171,17 +171,23 @@ Here is some echo `\'inline code\'`;';
         foreach ($h_value as $k=>$value){
             $title="<a href=#  style=text-decoration:none>$value[1]</a>";
             $key=$k;
-            $folder=false;
+            $folder=true;
             $children="";
             $tmp=array('title'=>$title,'key'=>$key,'folder'=>$folder,'children'=>$children);
            $current_level=$h_value[$k][0];
+            if($k==0){
+                $tmp['folder']=false;
+                $str[]=$tmp;
+            }
             /*是平级*/
            if($current_level==$h_value[$str[$str_length]['key']][0]){
+               $tmp['folder']=false;
                $str[]=$tmp;
                $str_length++;
            }
             /*是平级*/
             if($current_level<$h_value[$str[$str_length]['key']][0]){
+                $tmp['folder']=false;
                 $str[]=$tmp;
                 $str_length++;
             }
@@ -200,6 +206,7 @@ Here is some echo `\'inline code\'`;';
                 }
 
                 if(!is_array($tp)){
+                    $tmp['folder']=false;
                     $tp=$tmp;
                 }
 
