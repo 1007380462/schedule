@@ -117,7 +117,9 @@ Here is some echo `\'inline code\'`;';
                 }
                 if (substr($lineStr, 0, 5) == '#####'&&substr($lineStr, 0, 6) != '######') {
                     /*this is h5*/
-                    $h_value[]=5;
+                    $tmp[0]=5;
+                    $tmp[1]=substr($lineStr,5);
+                    $h_value[]=$tmp;
                     $anchor = '<p><a name=' . $time . '></a></p>';
                     $fileContent .= $anchor . "\n";
                     $fileContent .= $lineStr;
@@ -125,7 +127,9 @@ Here is some echo `\'inline code\'`;';
                 }
                 if (substr($lineStr, 0, 4) == '####'&&substr($lineStr, 0, 5) != '#####') {
                     /*this is h4*/
-                    $h_value[]=4;
+                    $tmp[0]=4;
+                    $tmp[1]=substr($lineStr,4);
+                    $h_value[]=$tmp;
                     $anchor = '<p><a name=' . $time . '></a></p>';
                     $fileContent .= $anchor . "\n";
                     $fileContent .= $lineStr;
@@ -133,7 +137,9 @@ Here is some echo `\'inline code\'`;';
                 }
                 if (substr($lineStr, 0, 3) == '###' && substr($lineStr, 0, 4) != '####') {
                     /*this is h3*/
-                    $h_value[]=3;
+                    $tmp[0]=3;
+                    $tmp[1]=substr($lineStr,3);
+                    $h_value[]=$tmp;
                     $anchor = '<p><a name=' . $time . '></a></p>';
                     $fileContent .= $anchor . "\n";
                     $fileContent .= $lineStr;
@@ -141,7 +147,9 @@ Here is some echo `\'inline code\'`;';
                 }
                 if (substr($lineStr, 0, 2) == '##' && substr($lineStr, 0, 3) != '###') {
                     /*this is h2*/
-                    $h_value[]=2;
+                    $tmp[0]=2;
+                    $tmp[1]=substr($lineStr,2);
+                    $h_value[]=$tmp;
                     $anchor = '<p><a name=' . $time . '></a></p>';
                     $fileContent .= $anchor . "\n";
                     $fileContent .= $lineStr;
@@ -149,7 +157,9 @@ Here is some echo `\'inline code\'`;';
                 }
                 if (substr($lineStr, 0, 1) == '#' && substr($lineStr, 0, 2) != '##') {
                     /*this is h1*/
-                    $h_value[]=1;
+                    $tmp[0]=1;
+                    $tmp[1]=substr($lineStr,1);
+                    $h_value[]=$tmp;
                     $anchor = '<p><a name=' . $time . '></a></p>';
                     $fileContent .= $anchor . "\n";
                     $fileContent .= $lineStr;
@@ -178,6 +188,7 @@ Here is some echo `\'inline code\'`;';
             if($k==0){
                 $tmp['folder']=false;
                 $str[]=$tmp;
+                continue;
             }
             /*是平级*/
            if($current_level==$h_value[$str[$str_length]['key']][0]){
