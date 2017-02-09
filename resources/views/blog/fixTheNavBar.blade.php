@@ -339,16 +339,12 @@
                                 async:true,
                             //  timeout:1000,
                                 beforeSend:function () {
-                                    
                                 },
                                 complete:function () {
-
                                 },
                                 success:function (data) {
-
                                 },
                                 error:function (xhr) {
-
                                 },
                             });
                         }
