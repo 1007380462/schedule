@@ -179,65 +179,45 @@ Here is some echo `\'inline code\'`;';
         $str=array();
         $str_length=0; //str array element number
         foreach ($h_value as $k=>$value){
-            $title="<a href=#  style=text-decoration:none>$value[1]</a>";
+            $title="<a href=#$k  style=text-decoration:none>$value[1]</a>";
             $key=$k;
             $folder=false;
             $children="";
             $tmp=array('title'=>$title,'key'=>$key,'folder'=>$folder,'children'=>$children);
            $current_level=$h_value[$k][0];
             if($k==0){
-              //  $tmp['folder']=false;
                 $str[]=$tmp;
                 continue;
             }
             /*是平级*/
            if($current_level==$h_value[$str[$str_length]['key']][0]){
-               //$tmp['folder']=false;
                $str[]=$tmp;
                $str_length++;
            }
             /*是平级*/
             if($current_level<$h_value[$str[$str_length]['key']][0]){
-                //$tmp['folder']=false;
                 $str[]=$tmp;
                 $str_length++;
             }
 
            /*是后代*/
             if($current_level>$h_value[$str[$str_length]['key']][0]){
-                /*$tp=&$str[$str_length]['children'];
-
-                while (is_array($tp)){
-                    $tp_length=count($tp);
-                    if($current_level<=$h_value[$tp[$tp_length-1]['key']][0]){
-                        $tp=$tmp;
-                        break;
-                    }
-                    $tp=&$tp[$tp_length-1]['children'];
-                }
-
-                if(!is_array($tp)){
-                    $tmp['folder']=false;
-                    $tp=$tmp;
-                }*/
-
                 $tp=&$str[$str_length];
 
                 while (is_array($tp['children'])){
                     $tp['folder']=true;
                     $tp_length=count($tp['children']);
-                    if($current_level<=$h_value[$tp[$tp_length-1]['key']][0]){
+                    if($current_level<=$h_value[$tp['children'][$tp_length-1]['key']][0]){
                         $tp['children']=$tmp;
                         break;
                     }
-                    $tp=&$tp[$tp_length-1];
+                    $tp=&$tp['children'][$tp_length-1];
                 }
 
                 if(!is_array($tp)){
-                    $tmp['folder']=true;
+                    $tp['folder']=true;
                     $tp['children']=$tmp;
                 }
-
 
             }
 

@@ -275,8 +275,6 @@
             };
             $(function(){
                 // Initialize Fancytree
-                var tree='{!! $tree !!}';
-                  console.log(tree);
                 $("#tree").fancytree({
                     extensions: ["dnd", "edit", "glyph"],
                     checkbox: true,
