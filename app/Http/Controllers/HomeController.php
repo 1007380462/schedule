@@ -193,11 +193,13 @@ Here is some echo `\'inline code\'`;';
            if($current_level==$h_value[$str[$str_length]['key']][0]){
                $str[]=$tmp;
                $str_length++;
+               continue;
            }
             /*是平级*/
             if($current_level<$h_value[$str[$str_length]['key']][0]){
                 $str[]=$tmp;
                 $str_length++;
+		continue;
             }
 
            /*是后代*/
@@ -207,16 +209,17 @@ Here is some echo `\'inline code\'`;';
                 while (is_array($tp['children'])){
                     $tp['folder']=true;
                     $tp_length=count($tp['children']);
+                 
                     if($current_level<=$h_value[$tp['children'][$tp_length-1]['key']][0]){
-                        $tp['children']=$tmp;
+                        $tp['children'][]=$tmp;
                         break;
                     }
                     $tp=&$tp['children'][$tp_length-1];
                 }
 
-                if(!is_array($tp)){
+                if(!is_array($tp['children'])){
                     $tp['folder']=true;
-                    $tp['children']=$tmp;
+                    $tp['children'][]=$tmp;
                 }
 
             }
