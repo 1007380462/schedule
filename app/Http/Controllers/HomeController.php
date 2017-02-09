@@ -206,7 +206,7 @@ Here is some echo `\'inline code\'`;';
                 }
 
                 if(!is_array($tp)){
-                    $tmp['folder']=false;
+                    $tmp['folder']=false; //
                     $tp=$tmp;
                 }
 
