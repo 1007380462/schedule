@@ -7,12 +7,13 @@
         <link rel="stylesheet" href="{{asset('css/FontAwesome/font-awesome.min.css')}}">
         <link rel="stylesheet" href="{{asset('css/app.css')}}">
         <link rel="stylesheet" href="{{asset('css/navbar-fixed-side.css')}}">
+
         <title>JT</title>
     </head>
 
     <body>
       
-
+{{--use bootstrap nav  and navbar-fixed-side.css to implement a left side navigation bar  and the use fancytree to implement a tree structure --}}
        <div class="container-fluid">
            <div class="row">
                <div class="col-sm-3 col-lg-2">
@@ -20,23 +21,9 @@
                          <div class="" style="position: fixed;height: 100% !important;">
                             <aside id="sidebar" class="sticky" style="top: 20px;height:100%">
                                 <div class="inside" style="position:relative;width:220px;height:100%; overflow:auto;">
-                                    <button type="button" id="sidebar_fold">
-                                        <b>hit</b>
-                                    </button>
-                                    <div id="jstree_demo_div" hidden>
-                                    </div>
 
-                                    <div id="tree">
+                                    <div id="tree"></div>
 
-                                    </div>
-
-                                    <div id="jstree_demo_div_instead" hidden>
-                                        <h6 style="margin-top: 0px; margin-bottom: 0px;">
-                                            <button type="button" id="sidebar_unfold">
-                                                <b>hit me</b>
-                                            </button>
-                                        </h6>
-                                    </div>
                                 </div>
                             </aside>
                         </div>
@@ -349,7 +336,7 @@
                     },
                     glyph: glyph_opts,
                     selectMode: 2,
-                    source:{!! $tree !!},
+                    source: {!! $tree !!},
                     toggleEffect: { effect: "drop", options: {direction: "left"}, duration: 400 },
 
                     lazyLoad: function(event, data) {
