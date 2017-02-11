@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Parsedown;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 
@@ -96,9 +97,10 @@ echo $x;
 Here is some echo `\'inline code\'`;';
         $fileContent = '';
         $time = 0;
-        $h_value=array(); //store h value and title name
+        //store h value and title name in sequence
+        $h_value=array();
 
-        /*get directory of file*/
+        /*get path of file*/
         $handle = fopen(public_path('jdy.txt'), 'r');
         /*add a anchor to each title and then use javascript to Automatically generate directory*/
         while (!feof($handle)) {
@@ -107,29 +109,29 @@ Here is some echo `\'inline code\'`;';
 
                 if (substr($lineStr, 0, 6) == '######') {
                     /*this is h6*/
-                    $tmp[0]=6;
-                    $tmp[1]=substr($lineStr,6);
-                    $h_value[]=$tmp;
+                    $tmp[0] = 6;
+                    $tmp[1] = substr($lineStr, 6);
+                    $h_value[] = $tmp;
                     $anchor = '<p><a name=' . $time . '></a></p>';
                     $fileContent .= $anchor . "\n";
                     $fileContent .= $lineStr;
                     $time++;
                 }
-                if (substr($lineStr, 0, 5) == '#####'&&substr($lineStr, 0, 6) != '######') {
+                if (substr($lineStr, 0, 5) == '#####' && substr($lineStr, 0, 6) != '######') {
                     /*this is h5*/
-                    $tmp[0]=5;
-                    $tmp[1]=substr($lineStr,5);
-                    $h_value[]=$tmp;
+                    $tmp[0] = 5;
+                    $tmp[1] = substr($lineStr, 5);
+                    $h_value[] = $tmp;
                     $anchor = '<p><a name=' . $time . '></a></p>';
                     $fileContent .= $anchor . "\n";
                     $fileContent .= $lineStr;
                     $time++;
                 }
-                if (substr($lineStr, 0, 4) == '####'&&substr($lineStr, 0, 5) != '#####') {
+                if (substr($lineStr, 0, 4) == '####' && substr($lineStr, 0, 5) != '#####') {
                     /*this is h4*/
-                    $tmp[0]=4;
-                    $tmp[1]=substr($lineStr,4);
-                    $h_value[]=$tmp;
+                    $tmp[0] = 4;
+                    $tmp[1] = substr($lineStr, 4);
+                    $h_value[] = $tmp;
                     $anchor = '<p><a name=' . $time . '></a></p>';
                     $fileContent .= $anchor . "\n";
                     $fileContent .= $lineStr;
@@ -137,9 +139,9 @@ Here is some echo `\'inline code\'`;';
                 }
                 if (substr($lineStr, 0, 3) == '###' && substr($lineStr, 0, 4) != '####') {
                     /*this is h3*/
-                    $tmp[0]=3;
-                    $tmp[1]=substr($lineStr,3);
-                    $h_value[]=$tmp;
+                    $tmp[0] = 3;
+                    $tmp[1] = substr($lineStr, 3);
+                    $h_value[] = $tmp;
                     $anchor = '<p><a name=' . $time . '></a></p>';
                     $fileContent .= $anchor . "\n";
                     $fileContent .= $lineStr;
@@ -147,9 +149,9 @@ Here is some echo `\'inline code\'`;';
                 }
                 if (substr($lineStr, 0, 2) == '##' && substr($lineStr, 0, 3) != '###') {
                     /*this is h2*/
-                    $tmp[0]=2;
-                    $tmp[1]=substr($lineStr,2);
-                    $h_value[]=$tmp;
+                    $tmp[0] = 2;
+                    $tmp[1] = substr($lineStr, 2);
+                    $h_value[] = $tmp;
                     $anchor = '<p><a name=' . $time . '></a></p>';
                     $fileContent .= $anchor . "\n";
                     $fileContent .= $lineStr;
@@ -157,9 +159,9 @@ Here is some echo `\'inline code\'`;';
                 }
                 if (substr($lineStr, 0, 1) == '#' && substr($lineStr, 0, 2) != '##') {
                     /*this is h1*/
-                    $tmp[0]=1;
-                    $tmp[1]=substr($lineStr,1);
-                    $h_value[]=$tmp;
+                    $tmp[0] = 1;
+                    $tmp[1] = substr($lineStr, 1);
+                    $h_value[] = $tmp;
                     $anchor = '<p><a name=' . $time . '></a></p>';
                     $fileContent .= $anchor . "\n";
                     $fileContent .= $lineStr;
@@ -171,55 +173,56 @@ Here is some echo `\'inline code\'`;';
             }
 
         }
-
         fclose($handle);
+
         $b = Parsedown::instance()->text($fileContent);
 
-       // $arr_length=count($h_value);
-        $str=array();
-        $str_length=0; //str array element number
+        //store tree node
+        $str = array();
+        //the number of the first level
+        $str_length = 0;
         foreach ($h_value as $k=>$value){
-            $title="<a href=#$k  style=text-decoration:none>$value[1]</a>";
-            $key=$k;
-            $folder=false;
-            $children="";
-            $tmp=array('title'=>$title,'key'=>$key,'folder'=>$folder,'children'=>$children);
-           $current_level=$h_value[$k][0];
-            if($k==0){
-                $str[]=$tmp;
+            $title = "<a href=#$k  style=text-decoration:none>$value[1]</a>";
+            $key = $k;
+            $folder = false;
+            $children = "";
+            $tmp = array('title' => $title, 'key' => $key, 'folder' => $folder, 'children' => $children);
+            $current_level = $h_value[$k][0];
+            if ($k == 0) {
+                $str[] = $tmp;
                 continue;
             }
-            /*是平级*/
-           if($current_level==$h_value[$str[$str_length]['key']][0]){
-               $str[]=$tmp;
-               $str_length++;
-               continue;
-           }
-            /*是平级*/
-            if($current_level<$h_value[$str[$str_length]['key']][0]){
-                $str[]=$tmp;
+            /*this node is first level*/
+            if ($current_level == $h_value[$str[$str_length]['key']][0]) {
+                $str[] = $tmp;
                 $str_length++;
-		continue;
+                continue;
+            }
+            /*this node is first level*/
+            if ($current_level < $h_value[$str[$str_length]['key']][0]) {
+                $str[] = $tmp;
+                $str_length++;
+                continue;
             }
 
-           /*是后代*/
-            if($current_level>$h_value[$str[$str_length]['key']][0]){
-                $tp=&$str[$str_length];
+           /*this node is current level's next level*/
+            if ($current_level > $h_value[$str[$str_length]['key']][0]) {
+                $tp =& $str[$str_length];
 
-                while (is_array($tp['children'])){
-                    $tp['folder']=true;
-                    $tp_length=count($tp['children']);
-                 
-                    if($current_level<=$h_value[$tp['children'][$tp_length-1]['key']][0]){
-                        $tp['children'][]=$tmp;
+                while (is_array($tp['children'])) {
+                    $tp['folder'] = true;
+                    $tp_length = count($tp['children']);
+
+                    if ($current_level <= $h_value[$tp['children'][$tp_length - 1]['key']][0]) {
+                        $tp['children'][] = $tmp;
                         break;
                     }
-                    $tp=&$tp['children'][$tp_length-1];
+                    $tp =& $tp['children'][$tp_length - 1];
                 }
 
-                if(!is_array($tp['children'])){
-                    $tp['folder']=true;
-                    $tp['children'][]=$tmp;
+                if (!is_array($tp['children'])) {
+                    $tp['folder'] = true;
+                    $tp['children'][] = $tmp;
                 }
 
             }
@@ -236,7 +239,7 @@ Here is some echo `\'inline code\'`;';
                              {"title": "Node 2.2", "key": "4"} 
                                 ]}            
                                      ]';
-
+        /*notice:key is node's name*/
         return view('blog.fixTheNavBar', ['text' => $b,'tree'=>$str2]);
 
     }
@@ -248,13 +251,15 @@ Here is some echo `\'inline code\'`;';
     public function adjustNodePlace(Request $request){
         $str = '[
                 {"title": "Node 1", "key": "1"},
-                {"title": "Folder 2", "key": "2", "folder": true, "children": [
-                    {"title": "Node 2.1", "key": "3"},
-                    {"title": "Node 2.2", "key": "4"}
-                ]}
-                    ]';
-        $str=json_decode($str);  //get a array
-
+                {"title": "Folder 2", "key": "2", "folder": true, 
+                "children": 
+                    {"title": "Node 2.1", "key": "3"}
+                ]';
+        $str = json_decode($str);      //get a array type
+        $nodeNameOne=$request->get(''); //the name of the moved node,
+        $nodeNameTwo=$request->get(''); //Target location above the name of the node
+        /*notice:nodeName*/
+        /*modify table ,add a record and modify a record */
 
     }
 
