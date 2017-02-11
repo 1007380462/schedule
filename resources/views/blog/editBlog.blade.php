@@ -29,8 +29,28 @@
             </nav>
         </div>
         <div class="col-sm-9 col-lg-10">
+<form class="form-horizontal">
+                <div class="control-group" style="padding-bottom: 10px;>
+                    <label class="control-label" for="inputEmail">nc</label>
+                    <div class="controls">
+                        <input id="inputEmail"  class="form-control" type="text" />
+                    </div>
+                </div>
+              
 
-            <div id="summernote">Hello Summernote</div>
+              <div class="control-group">
+                    <div class="controls">
+                        <input id="inputContent" type="text" hidden />
+                      <div id="summernote">Hello Summernote</div>                
+                </div>
+ 
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="submit">登陆</button>
+                    </div>
+                </div>
+            </form>
+
         <!-- your page content -->
         </div>
     </div>
@@ -54,6 +74,10 @@
     $(document).ready(function() {
         $('#summernote').summernote();
     });
+ $('.submit').on('click',function(){
+  console.log($('#summernote').summernote('code'));
+});
+     
 </script>
 
 
