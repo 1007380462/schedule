@@ -22,5 +22,5 @@ Route::group(['prefix'=>'home'],function(){
    Route::get('/index','HomeController@index');
    Route::get('/floatingNavigationBar','HomeController@floatingNavigationBar');
    Route::get('/fixedTheNavigationBar','HomeController@fixedTheNavigationBar');
-   Route::get('/sl','HomeController@sl');
+   Route::get('/editBlog','HomeController@editBlog');
 });

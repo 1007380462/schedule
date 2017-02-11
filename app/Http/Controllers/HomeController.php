@@ -272,4 +272,8 @@ Here is some echo `\'inline code\'`;';
 
     }
 
+    public function editBlog(Request $request){
+        return view('blog.editBlog');
+    }
+
 }
