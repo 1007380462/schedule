@@ -56,87 +56,10 @@
     });
 </script>
 
-<script type="text/javascript">
-
-    $(function() {
-        // index page card list
-        if ($('.card-list').length) {
-            var $cardArrow = $('.card-arrow');
-            var $cardListInner = $('.card-list-inner');
-
-            $cardListInner.scroll(function () {
-                $cardArrow.addClass('disappear');
-                if ($cardListInner.scrollLeft() < 20) {
-                    $cardArrow.removeClass('disappear');
-                }
-            });
-        }
-
-        // main summernote with custom placeholder
-        var $placeholder = $('.placeholder');
-        $('#summernote').summernote({
-            height: 300,
-            codemirror: {
-                mode: 'text/html',
-                htmlMode: true,
-                lineNumbers: true,
-                theme: 'monokai'
-            },
-            callbacks: {
-                onInit: function() {
-                    $placeholder.show();
-                },
-                onFocus: function() {
-                    $placeholder.hide();
-                },
-                onBlur: function() {
-                    var $self = $(this);
-                    setTimeout(function() {
-                        if ($self.summernote('isEmpty') && !$self.summernote('codeview.isActivated')) {
-                            $placeholder.show();
-                        }
-                    }, 300);
-                }
-            }
-        });
-    });
-</script>
 
 
 
 
-<script type="text/javascript">
-
-    $("#sidebar_fold").on('click', function () {
-        $("#jstree_demo_div_instead").removeAttr('hidden');
-        $("#jstree_demo_div").attr('hidden', 'true');
-        $("#sidebar_fold").attr('hidden', 'true');
-    });
-
-    $("#sidebar_unfold").on('click', function () {
-        $("#jstree_demo_div").removeAttr('hidden', 'true');
-        $("#jstree_demo_div_instead").attr('hidden', 'true');
-        $("#sidebar_fold").removeAttr('hidden');
-    });
-</script>
-
-
-{{--fancytree--}}
-
-
-<script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
-
-<link href="{{asset('fancytree/dist/skin-bootstrap/ui.fancytree.css')}}" rel="stylesheet" class="skinswitcher">
-
-<script src="{{asset('fancytree/dist/src/jquery.fancytree.js')}}"></script>
-<script src="{{asset('fancytree/dist/src/jquery.fancytree.dnd.js')}}"></script>
-<script src="{{asset('fancytree/dist/src/jquery.fancytree.edit.js')}}"></script>
-<script src="{{asset('fancytree/dist/src/jquery.fancytree.glyph.js')}}"></script>
-<script src="{{asset('fancytree/dist/src/jquery.fancytree.table.js')}}"></script>
-<script src="{{asset('fancytree/dist/src/jquery.fancytree.wide.js')}}"></script>
 
 
 </body>
