@@ -4,11 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{asset('css/FontAwesome/font-awesome.min.css')}}">
-    <link rel="stylesheet" href="{{asset('css/app.css')}}">
-    <link rel="stylesheet" href="{{asset('css/navbar-fixed-side.css')}}">
+
     {{--baidu condensed or compressed version--}}
-    <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
     <title>JT</title>
 </head>
 
@@ -44,11 +41,64 @@
 </footer>
 
 <!-- include summernote css/js-->
+<!-- include summernote css/js-->
+<!-- include libraries(jQuery, bootstrap) -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" />
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 <link href="{{asset('summernote/summernote.css')}}" rel="stylesheet">
 <script src="{{asset('summernote/summernote.min.js')}}"></script>
+
 <script type="text/javascript">
     $(document).ready(function() {
         $('#summernote').summernote();
+    });
+</script>
+
+<script type="text/javascript">
+
+    $(function() {
+        // index page card list
+        if ($('.card-list').length) {
+            var $cardArrow = $('.card-arrow');
+            var $cardListInner = $('.card-list-inner');
+
+            $cardListInner.scroll(function () {
+                $cardArrow.addClass('disappear');
+                if ($cardListInner.scrollLeft() < 20) {
+                    $cardArrow.removeClass('disappear');
+                }
+            });
+        }
+
+        // main summernote with custom placeholder
+        var $placeholder = $('.placeholder');
+        $('#summernote').summernote({
+            height: 300,
+            codemirror: {
+                mode: 'text/html',
+                htmlMode: true,
+                lineNumbers: true,
+                theme: 'monokai'
+            },
+            callbacks: {
+                onInit: function() {
+                    $placeholder.show();
+                },
+                onFocus: function() {
+                    $placeholder.hide();
+                },
+                onBlur: function() {
+                    var $self = $(this);
+                    setTimeout(function() {
+                        if ($self.summernote('isEmpty') && !$self.summernote('codeview.isActivated')) {
+                            $placeholder.show();
+                        }
+                    }, 300);
+                }
+            }
+        });
     });
 </script>
 
