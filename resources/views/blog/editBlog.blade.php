@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="{{asset('css/FontAwesome/font-awesome.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
     <link rel="stylesheet" href="{{asset('css/navbar-fixed-side.css')}}">
-
+    {{--baidu condensed or compressed version--}}
+    <script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
     <title>JT</title>
 </head>
 
@@ -44,15 +45,14 @@
 
 <!-- include summernote css/js-->
 <link href="{{asset('summernote/summernote.css')}}" rel="stylesheet">
-<script src="{{asset('summernote/summernote.js')}}"></script>
+<script src="{{asset('summernote/summernote.min.js')}}"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         $('#summernote').summernote();
     });
 </script>
 
-{{--baidu condensed or compressed version--}}
-<script src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+
 
 
 <script type="text/javascript">
