@@ -29,24 +29,25 @@
             </nav>
         </div>
         <div class="col-sm-9 col-lg-10">
-<form class="form-horizontal">
-                <div class="control-group" style="padding-bottom: 10px;>
-                    <label class="control-label" for="inputEmail">nc</label>
-                    <div class="controls">
-                        <input id="inputEmail"  class="form-control" type="text" />
+            <form class="form-horizontal" method="post" action="/index">
+                <div class="control-group" style="padding-bottom: 50px;">
+                    <label class="control-label col-sm-1">标题</label>
+                    <div class="controls col-sm-10">
+                        <input id="title" name="title" class="form-control" type="text"/>
                     </div>
                 </div>
-              
 
-              <div class="control-group">
-                    <div class="controls">
-                        <input id="inputContent" type="text" hidden />
-                      <div id="summernote">Hello Summernote</div>                
-                </div>
- 
+
                 <div class="control-group">
                     <div class="controls">
-                        <button type="submit" class="submit">登陆</button>
+                        <input id="inputContent" name="inputContent" type="text" hidden/>
+                        <div id="summernote">Hello </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="submit">提交</button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -61,7 +62,6 @@
 </footer>
 
 <!-- include summernote css/js-->
-<!-- include summernote css/js-->
 <!-- include libraries(jQuery, bootstrap) -->
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" />
@@ -71,19 +71,18 @@
 <script src="{{asset('summernote/summernote.min.js')}}"></script>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#summernote').summernote();
     });
- $('.submit').on('click',function(){
-  console.log($('#summernote').summernote('code'));
-});
-     
+    $('.submit').on('click', function () {
+        //console.log($('#summernote').summernote('code'));
+        var inputContent = $('#summernote').summernote('code');
+        $('#inputContent').attr('value', inputContent);
+        //console.log($('#inputContent').val(inputContent));
+
+    });
+
 </script>
-
-
-
-
-
 
 
 </body>
