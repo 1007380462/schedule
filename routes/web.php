@@ -24,3 +24,7 @@ Route::group(['prefix'=>'home'],function(){
    Route::get('/fixedTheNavigationBar','HomeController@fixedTheNavigationBar');
    Route::get('/editBlog','HomeController@editBlog');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
