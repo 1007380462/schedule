@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+       // $this->middleware('auth');
     }
 
     /**
@@ -23,6 +23,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        echo 'sdsd';exit;
+        //in the early  The project does use file to store blog content instead of database
+        //user info stored in the cookie,user log in doesn't use session.
+        //$_COOKIE[''];
+        //setcookie('','');
+        //return view('home');
     }
 }

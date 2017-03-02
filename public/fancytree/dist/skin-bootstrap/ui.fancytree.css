@@ -25,7 +25,7 @@ ul.fancytree-container {
   padding: 3px;
   margin: 0;
   background-color: white;
-  border: 1px dotted gray;
+  border: 0px dotted gray;
   min-height: 0%;
   position: relative;
 }
@@ -575,11 +575,11 @@ span.fancytree-node span.fancytree-expander:hover {
   border-color: #337ab7;
 }
 .fancytree-plain.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active span.fancytree-title {
-  background-color: #337ab7;
+  background-color: #a2a8ad;/*#337ab7;*/ /*这是鼠标点击以后离开的背景色*/
   border-color: #337ab7;
 }
 .fancytree-plain.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active:hover span.fancytree-title {
-  background-color: #2e6da4;
+  background-color: #dff0d8;  /*这是鼠标移动到其上面的颜色*/
 }
 /*******************************************************************************
  * 'table' extension

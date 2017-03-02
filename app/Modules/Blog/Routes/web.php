@@ -12,7 +12,18 @@
 */
 
 Route::group(['prefix' => 'blog'], function () {
-    Route::get('/', function () {
-        dd('This is the Blog module index page. Build something great!');
-    });
+    Route::get('/','IndexController@floatingNavigationBar');
+    Route::get('/index','IndexController@index');
+    Route::get('/floatingNavigationBar','IndexController@floatingNavigationBar');
+    Route::get('/fixedTheNavigationBar','IndexController@fixedTheNavigationBar');
+    Route::get('/editBlog','IndexController@editBlog');
+    Route::post('/storeBlog','IndexController@storeBlog');
+    Route::get('/showBlogList','IndexController@showBlogList');
+    Route::get('/createBlog','IndexController@createBlog');
+    Route::post('/getBlogContent','IndexController@getBlogContent');
+    Route::get('/createDirectory','IndexController@createDirectory');
+    Route::post('/storeDirectory','IndexController@storeDirectory');
+    Route::post('/adjustNodePlace','IndexController@adjustNodePlace');
+
+    Route::get('/schedule','ScheduleController@schedule');
 });

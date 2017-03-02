@@ -18,11 +18,8 @@ Route::get('/', function () {
 #Route::resource('home','HomeController');
 
 Route::group(['prefix'=>'home'],function(){
-   Route::get('/','HomeController@floatingNavigationBar');
-   Route::get('/index','HomeController@index');
-   Route::get('/floatingNavigationBar','HomeController@floatingNavigationBar');
-   Route::get('/fixedTheNavigationBar','HomeController@fixedTheNavigationBar');
-   Route::get('/editBlog','HomeController@editBlog');
+   Route::get('/','HomeController@index');
+
 });
 
 Auth::routes();

@@ -28,12 +28,14 @@
                 <!-- normal collapsible navbar markup -->
             </nav>
         </div>
+
         <div class="col-sm-9 col-lg-10">
-            <form class="form-horizontal" method="post" action="/index">
+            <form class="form-horizontal" method="post" action="{{url('blog/storeBlog')}}">
                 <div class="control-group" style="padding-bottom: 50px;">
                     <label class="control-label col-sm-1">标题</label>
                     <div class="controls col-sm-10">
-                        <input id="title" name="title" class="form-control" type="text"/>
+                        <input id="title" name="title" value="{{$title}}" class="form-control" type="text"/>
+                        <input id="blogId" name="blogId" value="{{$blogId}}" type="text" hidden/>
                     </div>
                 </div>
 
@@ -41,7 +43,7 @@
                 <div class="control-group">
                     <div class="controls">
                         <input id="inputContent" name="inputContent" type="text" hidden/>
-                        <div id="summernote">Hello </div>
+                        <div id="summernote">{!! $inputContent !!} </div>
                     </div>
 
                     <div class="control-group">
@@ -72,7 +74,12 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#summernote').summernote();
+        $('#summernote').summernote({
+            height: 300,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null,             // set maximum height of editor
+            focus: true                  // set focus to editable area after initializing summe
+        });
     });
     $('.submit').on('click', function () {
         //console.log($('#summernote').summernote('code'));
