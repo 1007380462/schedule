@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-sm-3 col-lg-2">
             <nav class="navbar navbar-default navbar-fixed-side">
-                <div class="" style="position: fixed;height: 100% !important;">
+                <div class="" style="position: fixed;height: 100% !important;left: 0px;">
                     <aside id="sidebar" class="sticky" style="top: 20px;height:100%">
                         <div class="inside" style="position:relative;width:220px;height:100%; overflow:auto;">
 

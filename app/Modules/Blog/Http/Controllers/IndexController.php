@@ -627,27 +627,6 @@ class IndexController extends Controller
     }
 
 
-    public function traversalFolder($path)
-    {
-        /*print all file name and folder name*/
-        if (is_dir($path)) {
-            $dirObj = dir($path);
-            while (false !== ($entry = $dirObj->read())) {
-                if ($entry == '.' || $entry == '..') continue;
-                $entry = $path . '/' . $entry;
-                if (is_dir($entry)) {
-                    traversalFolder($entry);
-                }
-                if (is_file($entry)) {
-                    echo $entry . "\n";
-                }
-            }
-            $dirObj->close();
-            return;
-        } else {
-            print_r($path);
-            return;
-        }
-    }
+
 }
 
