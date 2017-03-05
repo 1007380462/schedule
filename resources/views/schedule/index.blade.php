@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html><head>
+<html>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Coopbee | Calendar</title>
@@ -7,8 +8,6 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="../adminLTE-2.3.6/bootstrap/css/bootstrap.min.css">
-    <!-- Font Awesome -->
-
 
     <!-- Ionicons -->
     <link rel="stylesheet" href="../adminLTE-2.3.6/ionicons.min.css">
@@ -20,8 +19,10 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="../adminLTE-2.3.6/dist/css/skins/_all-skins.min.css">
+     <!--layer css-->
 
 </head>
+
 <body class="skin-blue sidebar-mini">
 <div class="wrapper">
     <div class="content-wrapper" style="min-height: 231px; margin-left: 0px;">
@@ -35,10 +36,10 @@
                 <li class="active">Calendar</li>
             </ol>
         </section>
-
+<button type="button" class="goodsClass">sdsd</button>
         <section class="content">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3" hidden>
                     <div class="box box-solid">
                         <div class="box-header with-border">
                             <h4 class="box-title">Draggable Events</h4>
@@ -132,6 +133,18 @@
 <!-- fullCalendar 2.2.5 -->
 <script src="../adminLTE-2.3.6/moment.min.js"></script>
 <script src="../adminLTE-2.3.6/plugins/fullcalendar/fullcalendar.min.js"></script>
+
+<!--layer-->
+<script type="text/javascript" src="../layui/layui.js"></script>
+<link href="../layui/layui.css">
+<script type="text/javascript">
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        laydate();
+    });
+</script>
+
+
 
 <!-- Page specific script -->
 <script>
@@ -234,8 +247,35 @@
                 }
             ],
             eventClick: function(event) {
+                /*
+                * <a class="fc-day-grid-event fc-event fc-start fc-end fc-draggable"
+                * style="background-color:#00a65a;border-color:#00a65a">
+                * <div class="fc-content">
+                * <span class="fc-time">7p</span>
+                * <span class="fc-title">Birthday Party</span>
+                * </div>
+                * </a>
+                * */
                 console.log(event);
-                alert('eventClick');
+                console.log(event.start._d);
+                var text=event.title;
+                var backgroundColor=event.backgroundColor;
+                var borderColor=event.borderColor;
+
+                var popContent='<input class="planContent"><input class="layui-input" placeholder="自定义日期格式" onclick="layui.laydate({elem: this, istime: true, format:'+ "'"+'YYYY-MM-DD hh:mm:ss'+"'"+'})">';
+                layui.use('layer', function(){
+                    var layer = layui.layer;
+                    layer.open({
+                        type: 1 //Page层类型
+                        ,area: ['500px', '300px']
+                        ,title: '编辑分类'
+                        ,shade: 0.6 //遮罩透明度
+                        ,maxmin: true //允许全屏最小化
+                        ,anim: 1 //0-6的动画形式，-1不开启
+                        ,content: popContent,
+                    });
+                });
+                //alert('eventClick');
                 if (event.url) {
                     alert(event.url);return false;
                     window.open(event.url);
@@ -265,6 +305,7 @@
              // alert('eventDragStop');
             },
             eventDrop:function( event, delta, revertFunc, jsEvent, ui, view ) {
+                console.log(event);
                 alert('eventDrop');
             },
             eventResizeStart:function( event, jsEvent, ui, view ) {
@@ -282,6 +323,7 @@
             editable: true,
             droppable: true, // this allows things to be dropped onto the calendar !!!
             drop: function (date, allDay) { // this function is called when something is dropped
+                console.log(this);
                 console.log(date);
                 console.log(allDay);
                 alert('drop');
