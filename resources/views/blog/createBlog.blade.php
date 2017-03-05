@@ -4,15 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {{--baidu condensed or compressed version--}}
+
     {{--summernote The rich text editor--}}
     <link href="{{asset('summernote/summernote.css')}}" rel="stylesheet">
     <script src="{{asset('summernote/summernote.min.js')}}"></script>
 
     <link rel="stylesheet" href='../css/bootstrap-3.3.6.min.css'>
     <link href="{{asset('fancytree/dist/skin-bootstrap/ui.fancytree.css')}}" rel="stylesheet" class="skinswitcher">
-
-    {{--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" />--}}
     <title>coopbee</title>
 </head>
 
@@ -20,10 +18,11 @@
 
 {{--use bootstrap nav  and navbar-fixed-side.css to implement a left side navigation bar  and the use fancytree to implement a tree structure --}}
 <div class="container-fluid">
-    <div class="row">
+    <nav class="navbar-fixed-top" style="background: red"><img src="../coopbee.png"></nav>
+    <div class="row" style="margin-top:30px">
         <div class="col-sm-3 col-lg-2">
             <nav class="navbar navbar-default navbar-fixed-side">
-                <div class="" style="position: fixed;height: 100% !important;left: 0px;">
+                <div class="" style="position: fixed;height: 90% !important;left: 0px;">
                     <aside id="sidebar" class="sticky" style="top: 20px;height:100%">
                         <div class="inside" style="position:relative;width:220px;height:100%; overflow:auto;">
 
@@ -32,14 +31,13 @@
                         </div>
                     </aside>
                 </div>
-                <!-- normal collapsible navbar markup -->
             </nav>
         </div>
 
         <div class="col-sm-9 col-lg-10">
             <form class="form-horizontal" method="post" action="{{url('blog/storeBlog')}}">
                 <div class="control-group" style="padding-bottom: 50px;">
-                    <label class="control-label col-sm-1">标题</label>
+                    <label class="control-label col-sm-1">标题:</label>
                     <div class="controls col-sm-10">
                         <input id="title" name="title" value="" class="form-control" type="text"/>
                         <input id="blogId" name="blogId" value="" type="text" hidden/>
@@ -62,7 +60,6 @@
                 </div>
             </form>
 
-        <!-- your page content -->
         </div>
     </div>
 </div>
@@ -92,6 +89,7 @@
 <script src="{{asset('fancytree/dist/src/jquery.fancytree.glyph.js')}}"></script>
 <script src="{{asset('fancytree/dist/src/jquery.fancytree.table.js')}}"></script>
 <script src="{{asset('fancytree/dist/src/jquery.fancytree.wide.js')}}"></script>
+
 {{--glyph fonts ,bootstrap and drag drop--}}
 <script type="text/javascript">
     glyph_opts = {
@@ -105,8 +103,8 @@
             dropMarker: "glyphicon glyphicon-arrow-right",
             error: "glyphicon glyphicon-warning-sign",
             expanderClosed: "glyphicon glyphicon-menu-right",
-            expanderLazy: "glyphicon glyphicon-menu-right",  // glyphicon-plus-sign
-            expanderOpen: "glyphicon glyphicon-menu-down",  // glyphicon-collapse-down
+            expanderLazy: "glyphicon glyphicon-menu-right",    // glyphicon-plus-sign
+            expanderOpen: "glyphicon glyphicon-menu-down",     // glyphicon-collapse-down
             folder: "glyphicon glyphicon-folder-close",
             folderOpen: "glyphicon glyphicon-folder-open",
             loading: "glyphicon glyphicon-refresh glyphicon-spin"
@@ -225,7 +223,6 @@
         var inputContent = $('#summernote').summernote('code');
         $('#inputContent').attr('value', inputContent);
     });
-
 </script>
 
 </body>

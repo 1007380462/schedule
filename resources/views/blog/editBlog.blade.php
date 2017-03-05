@@ -13,7 +13,9 @@
 
 {{--use bootstrap nav  and navbar-fixed-side.css to implement a left side navigation bar  and the use fancytree to implement a tree structure --}}
 <div class="container-fluid">
-    <div class="row">
+    <nav class="navbar-fixed-top" style="background: red"><img src="../coopbee.png"></nav>
+    <div class="row" style="margin-top:30px">
+
         <div class="col-sm-3 col-lg-2">
             <nav class="navbar navbar-default navbar-fixed-side">
                 <div class="" style="position: fixed;height: 100% !important;">

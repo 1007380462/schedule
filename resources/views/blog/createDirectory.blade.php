@@ -11,11 +11,12 @@
 
 {{--use bootstrap nav  and navbar-fixed-side.css to implement a left side navigation bar  and the use fancytree to implement a tree structure --}}
 <div class="container-fluid">
-    <div class="row">
+    <nav class="navbar-fixed-top" style="background: red"><img src="../coopbee.png"></nav>
+    <div class="row" style="margin-top:30px">
 
         <div class="col-sm-3 col-lg-2">
             <nav class="navbar navbar-default navbar-fixed-side">
-                <div class="" style="position: fixed;height: 100% !important;left: 0px;">
+                <div class="" style="position: fixed;height: 90% !important;left: 0px;">
                     <aside id="sidebar" class="sticky" style="top: 20px;height:100%">
                         <div class="inside" style="position:relative;width:220px;height:100%; overflow:auto;">
 

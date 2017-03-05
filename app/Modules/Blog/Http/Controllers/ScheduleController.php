@@ -17,7 +17,7 @@ use League\Flysystem\Exception;
 class ScheduleController extends Controller
 {
     public function schedule(){
-        echo 'sdsd';
+        return view('schedule.index');
     }
 
     /**
