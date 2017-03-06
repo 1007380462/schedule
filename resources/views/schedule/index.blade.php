@@ -28,18 +28,18 @@
     <div class="content-wrapper" style="min-height: 231px; margin-left: 0px;">
         <section class="content-header">
             <h1>
-                Calendar
-                <small>Calendar</small>
+                日程表
+                <small>日程表</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
                 <li class="active">Calendar</li>
             </ol>
         </section>
-<button type="button" class="goodsClass">sdsd</button>
+        <button type="button" class="goodsClass" hidden>sdsd</button>
         <section class="content">
             <div class="row">
-                <div class="col-md-3" hidden>
+                <div class="col-md-3">
                     <div class="box box-solid">
                         <div class="box-header with-border">
                             <h4 class="box-title">Draggable Events</h4>
@@ -47,12 +47,17 @@
                         <div class="box-body">
                             <!-- the events -->
                             <div id="external-events">
-                                <div class="external-event bg-green ui-draggable ui-draggable-handle" style="position: relative;">Lunch</div>
-                                <div class="external-event bg-yellow ui-draggable ui-draggable-handle" style="position: relative;">Go home</div>
-                                <div class="external-event bg-aqua ui-draggable ui-draggable-handle" style="position: relative;">Do homework</div>
-                                <div class="external-event bg-light-blue ui-draggable ui-draggable-handle" style="position: relative;">Work on UI design</div>
-                                <div class="external-event bg-red ui-draggable ui-draggable-handle" style="position: relative;">Sleep tight</div>
-                                <div class="checkbox">
+                                <div class="external-event bg-green ui-draggable ui-draggable-handle"
+                                     style="position: relative;padding-top: 20px;"></div>
+                                <div class="external-event bg-yellow ui-draggable ui-draggable-handle"
+                                     style="position: relative;padding-top: 20px;"></div>
+                                <div class="external-event bg-aqua ui-draggable ui-draggable-handle"
+                                     style="position: relative;padding-top: 20px;"></div>
+                                <div class="external-event bg-light-blue ui-draggable ui-draggable-handle"
+                                     style="position: relative;padding-top: 20px;"></div>
+                                <div class="external-event bg-red ui-draggable ui-draggable-handle"
+                                     style="position: relative;padding-top: 20px;"></div>
+                                <div class="checkbox" style="display: none">
                                     <label for="drop-remove">
                                         <input type="checkbox" id="drop-remove">
                                         remove after drop
@@ -63,7 +68,7 @@
                         <!-- /.box-body -->
                     </div>
                     <!-- /. box -->
-                    <div class="box box-solid">
+                    <div class="box box-solid" style="display: none;">
                         <div class="box-header with-border">
                             <h3 class="box-title">Create Event</h3>
                         </div>
@@ -91,7 +96,8 @@
                                 <input id="new-event" type="text" class="form-control" placeholder="Event Title">
 
                                 <div class="input-group-btn">
-                                    <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Add</button>
+                                    <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Add
+                                    </button>
                                 </div>
                                 <!-- /btn-group -->
                             </div>
@@ -109,7 +115,8 @@
                     </div>
                 </div>
 
-            </div></section>
+            </div>
+        </section>
     </div>
 
 </div>
@@ -149,7 +156,10 @@
 <!-- Page specific script -->
 <script>
     $(function () {
-
+        var dada=new Date(y, m, d, h, min, sec, ms);
+        var ttttt=dada.getDate();
+     console.log(ttttt);
+       // console.log(new Date(y,m,d-5));
         /* initialize the external events
          -----------------------------------------------------------------*/
         function ini_events(ele) {
@@ -185,14 +195,74 @@
                 y = date.getFullYear();
         $('#calendar').fullCalendar({
             selectable:true,
+
             dayClick: function(date, jsEvent, view) {
-              //alert('dayclick');
+                return false;
+                console.log($(this));
+                console.log(date);
+                console.log(jsEvent);
+                console.log(view);
+
+                var _that=$(this);
+                layui.use('layer', function(){
+                    var layer = layui.layer;
+                    window.wmr=_that;
+                    var planRecord='<a class="fc-day-grid-event fc-event fc-start fc-end fc-draggable" style="background-color:#00a65a;border-color:#00a65a">' +
+                                  '<div class="fc-content">' +
+                                 '<span class="fc-time">7p</span>' +
+                                 '<span class="fc-title">wwwwwwwwwwwwwwwwwwwwwwwwwwwww</span></div></a>';
+                    _that.html(planRecord);
+                    var colorChoose='<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#00c0ef;background-color:#00c0ef;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#0073b7;background-color:#0073b7;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#3c8dbc;background-color:#3c8dbc;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#39cccc;background-color:#39cccc;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#f39c12;background-color:#f39c12;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#ff851b;background-color:#ff851b;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#00a65a;background-color:#00a65a;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#01ff70;background-color:#01ff70;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#dd4b39;background-color:#dd4b39;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#605ca8;background-color:#605ca8;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#f012be;background-color:#f012be;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#777;background-color:#777;width: 20px;height: 20px;"></button>' +
+                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#001f3f;background-color:#001f3f;width: 20px;height: 20px;"></button>';
+
+                    var preview='<a class="">' +
+                            '<div class="content" >' +
+                            '<span hidden class="time" style="color: #fff;border-color:#00c0ef;background-color:#00c0ef;">12a</span>' +
+                            '<span class="title" style="color: #fff;border-color:#00c0ef;background-color:#00c0ef;">All Day Event</span>' +
+                            '</div></a>';
+
+                    layer.open({
+                        type: 1 //Page层类型
+                        ,area: ['500px', '300px']
+                        ,title: '编辑分类'
+                        ,shade: 0.6 //遮罩透明度
+                        ,maxmin: true //允许全屏最小化
+                        ,anim: 1 //0-6的动画形式，-1不开启
+                        ,content: '<input class="planContent" value="sss">' +
+                        '<input class="layui-input" placeholder="日期" ' +
+                        'onclick="layui.laydate({elem: this, istime: true, format:'+ "'"+'YYYY-MM-DD hh:mm:ss'+"'"+'})">' +
+                        '<button type="button" class="modify">添加</button>'+colorChoose+preview+
+                        '<script>$(".colorRender").on("click",function() {var color=$(this).css("background-color");' +
+                        'var inputValue=$(".planContent").val();$(".title").html(inputValue);' +
+                        '$(".title").css("background-color",color);$(".title").css("border-color",color);});' +
+                        '$(".modify").on("click",function() {var modifyContent=$(".planContent").val();' +
+                        'var time=$(".layui-input").val();console.log(time);window.wmr.find("span.fc-title").html(modifyContent)});' +
+                        '<\/script>',
+                    });
+                });
+                console.log("single click");
+              //alert('single click');
             },
+
             header: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'month,agendaWeek,agendaDay'
             },
+
+            timezone:'local',
+
             buttonText: {
                 today: 'today',
                 month: 'month',
@@ -241,12 +311,24 @@
                     title: 'Click for Google',
                     start: new Date(y, m, 28),
                     end: new Date(y, m, 29),
-                    url: 'http://google.com/',
+                  //url: 'http://google.com/',
                     backgroundColor: "#3c8dbc", //Primary (light-blue)
                     borderColor: "#3c8dbc" //Primary (light-blue)
                 }
             ],
+
             eventClick: function(event) {
+                /*动态进行添加日程数据的添加*/
+                var ar=[{
+                    title: 'Meeting-two',
+                    start: new Date(y, m, d, 11, 30),
+                    allDay: false,
+                    backgroundColor: "#0073b7", //Blue
+                    borderColor: "#0073b7" //Blue
+                }];
+                $('#calendar').fullCalendar("addEventSource",ar);
+
+
                 /*
                 * <a class="fc-day-grid-event fc-event fc-start fc-end fc-draggable"
                 * style="background-color:#00a65a;border-color:#00a65a">
@@ -256,65 +338,141 @@
                 * </div>
                 * </a>
                 * */
-                console.log(event);
-                console.log(event.start._d);
+
+                var _that=$(this);
+               // console.log($(this).find("span.fc-title").html());
+               // console.log($(this).find("span.fc-time").html());
+               // console.log(event);
+
                 var text=event.title;
                 var backgroundColor=event.backgroundColor;
                 var borderColor=event.borderColor;
+                var contentTime=_that.find("span.fc-time").html();
+                var content=_that.find("span.fc-title").html();
 
-                var popContent='<input class="planContent"><input class="layui-input" placeholder="自定义日期格式" onclick="layui.laydate({elem: this, istime: true, format:'+ "'"+'YYYY-MM-DD hh:mm:ss'+"'"+'})">';
                 layui.use('layer', function(){
                     var layer = layui.layer;
+                    window.wmr=_that;
+                   var colorChoose='<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#00c0ef;background-color:#00c0ef;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#0073b7;background-color:#0073b7;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#3c8dbc;background-color:#3c8dbc;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#39cccc;background-color:#39cccc;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#f39c12;background-color:#f39c12;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#ff851b;background-color:#ff851b;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#00a65a;background-color:#00a65a;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#01ff70;background-color:#01ff70;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#dd4b39;background-color:#dd4b39;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#605ca8;background-color:#605ca8;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#f012be;background-color:#f012be;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#777;background-color:#777;width: 20px;height: 20px;"></button>' +
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#001f3f;background-color:#001f3f;width: 20px;height: 20px;"></button>';
+                    colorChoose='';
+
+                    var preview='<a class="">' +
+                            '<div class="content" >' +
+                            '<span hidden class="time" style="color: #fff;border-color:#00c0ef;background-color:#00c0ef;">12a</span>' +
+                            '<span class="title" style="color: #fff;border-color:#00c0ef;background-color:#00c0ef;">All Day Event</span>' +
+                            '</div></a>';
+                        preview='';
+
                     layer.open({
-                        type: 1 //Page层类型
+                        type: 1    //Page层类型
                         ,area: ['500px', '300px']
                         ,title: '编辑分类'
-                        ,shade: 0.6 //遮罩透明度
-                        ,maxmin: true //允许全屏最小化
-                        ,anim: 1 //0-6的动画形式，-1不开启
-                        ,content: popContent,
+                        ,shade: 0.6     //遮罩透明度
+                        ,maxmin: true  //允许全屏最小化
+                        ,anim: 1       //0-6的动画形式，-1不开启
+                        ,content: '<input class="planContent" value="sss">' +
+                        '<input hidden class="layui-input" placeholder="日期" ' +
+                        'onclick="layui.laydate({elem: this, istime: true, format:'+ "'"+'YYYY-MM-DD hh:mm:ss'+"'"+'})">' +
+                        '<a class="modify layui-layer-close layui-layer-close1" href="javascript:;">添加</a>'+colorChoose+preview+
+                        '<script>$(".colorRender").on("click",function() {var color=$(this).css("background-color");' +
+                        'var inputValue=$(".planContent").val();$(".title").html(inputValue);' +
+                        '$(".title").css("background-color",color);$(".title").css("border-color",color);});' +
+                        '$(".modify").on("click",function() {var modifyContent=$(".planContent").val();' +
+                        'var time=$(".layui-input").val();window.wmr.find("span.fc-title").html(modifyContent)});' +
+                        '<\/script>',
                     });
                 });
-                //alert('eventClick');
+
                 if (event.url) {
-                    alert(event.url);return false;
+                    return false;
                     window.open(event.url);
                     return false;
                 }
             },
+
             eventMouseover: function(event) {
                 // alert('eventMouseover');
                 if (event.url) {
-                    alert(event.url);return false;
+                  //  alert(event.url);return false;
                     window.open(event.url);
                     return false;
                 }
             },
+
             eventMouseout: function(event) {
                 // alert('eventMouseout');
                 if (event.url) {
-                    alert(event.url);return false;
+                  //  alert(event.url);return false;
                     window.open(event.url);
                     return false;
                 }
             },
+
             eventDragStart:function( event, jsEvent, ui, view ) {
+                console.log('this is event drag start');
+                console.log(event);
                 //alert('eventDragStart');
             },
+
             eventDragStop:function( event, jsEvent, ui, view ) {
-             // alert('eventDragStop');
-            },
-            eventDrop:function( event, delta, revertFunc, jsEvent, ui, view ) {
                 console.log(event);
-                alert('eventDrop');
+                console.log('this is drag stop');
+                //alert('eventDragStop');
             },
+
+            eventDrop:function( event, delta, revertFunc, jsEvent, ui, view ) {
+                //console.log(event.start.format('YYYY-MM-DD hh:mm:ss'));
+                var startTime=event.start.format('YYYY-MM-DD hh:mm:ss');
+                var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration')); // get the default and convert it to proper type
+                var end = event.end || event.start.clone().add(defaultDuration); // If there is no end, compute it，默认时间区间是两小时
+                //console.log('end is ' + end.format('YYYY-MM-DD hh:mm:ss'));
+                var endTime=end.format('YYYY-MM-DD hh:mm:ss');
+                //alert('eventDrop');
+            },
+
             eventResizeStart:function( event, jsEvent, ui, view ) {
                // alert('eventResizeStart');
             },
             eventResizeStop:function( event, jsEvent, ui, view ) {
-             //   alert('eventResizeStop');
+                /*获取移动前的开始时间和结束时间*/
+               console.log('eventResizeStop');
+                console.log(event);
+                console.log(event.start);
+                var startTime=moment(event.start["_d"]).format('YYYY-MM-DD hh:mm:ss');
+                console.log('this is starttime'+startTime);
+                //event.end || event.start.clone().add(defaultDuration);
+                var endTime='';  //移动之前的结束时间
+                if(event.end==null){
+                    //var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration'));
+                    //endTime=event.start.clone().add(defaultDuration);
+                    endTime='';
+                }else{
+                    endTime=moment(event.end["_d"]).format('YYYY-MM-DD hh:mm:ss');
+                }
+                console.log('this is endTime'+endTime);
+               // alert('eventResizeStop');
             },
             eventResize:function( event, delta, revertFunc, jsEvent, ui, view ) {
+                /*获取移动后的开始时间和结束时间*/
+                console.log(event);
+                var startTime=moment(event.start["_d"]).format('YYYY-MM-DD hh:mm:ss');
+                console.log(startTime);
+                var endTime=moment(event.end["_d"]).format('YYYY-MM-DD hh:mm:ss'); //移动之前的结束时间
+                console.log(endTime);
+                console.log(delta);
+                console.log('eventResize');
                // alert('eventResize');
             },
             eventReceive:function( event ) {
@@ -326,7 +484,7 @@
                 console.log(this);
                 console.log(date);
                 console.log(allDay);
-                alert('drop');
+               // alert('drop');
                 // retrieve the dropped element's stored Event Object
                 var originalEventObject = $(this).data('eventObject');
 
@@ -351,6 +509,8 @@
 
             }
         });
+
+
 
         /* ADDING EVENTS */
         var currColor = "#3c8dbc"; //Red by default

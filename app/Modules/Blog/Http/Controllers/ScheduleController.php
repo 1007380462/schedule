@@ -4,6 +4,7 @@ namespace App\Modules\Blog\Http\Controllers;
 
 use App\Model\File;
 use App\Model\FileRelation;
+use App\Model\Schedule;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -25,7 +26,25 @@ class ScheduleController extends Controller
      * @param Request $request
      */
     public function addSchedule(Request $request){
+        $startTime=$request['startTime'];
+        $endTime=$request['endTime'];
+        $backgroundColor=$request['backgroundColor'];
+        $borderColor=$request['borderColor'];
+        $content=$request['content'];
+        $arr=['backgroundColor'=>$backgroundColor,'borderColor'=>$borderColor];
+        $arrJSoned=json_encode($arr);
 
+        $scheduleMode=new Schedule();
+        $scheduleMode->startTime=$startTime;
+        $scheduleMode->endTime=$endTime;
+        $scheduleMode->content=$content;
+        $scheduleMode->ext=$arrJSoned;
+
+        if($scheduleMode->save()){
+            echo 'true';
+        }
+
+        echo 'false';
     }
 
     /**
@@ -33,7 +52,11 @@ class ScheduleController extends Controller
      * @param Request $request
      */
     public function removeSchedule(Request $request){
-
+        $id=$request['id'];
+        if(Schedule::where('id',$id)->delete()){
+         echo 'true';
+        }
+        echo 'false';
     }
 
     /**
@@ -41,7 +64,25 @@ class ScheduleController extends Controller
      * @param Request $request
      */
     public function editSchedule(Request $request){
+        $startTime=$request['startTime'];
+        $endTime=$request['endTime'];
+        $backgroundColor=$request['backgroundColor'];
+        $borderColor=$request['borderColor'];
+        $content=$request['content'];
+        $arr=['backgroundColor'=>$backgroundColor,'borderColor'=>$borderColor];
+        $arrJSoned=json_encode($arr);
+        $id=$request['id'];
+        $scheduleMode=Schedule::find($id);
+        $scheduleMode->startTime=$startTime;
+        $scheduleMode->endTime=$endTime;
+        $scheduleMode->content=$content;
+        $scheduleMode->ext=$arrJSoned;
 
+        if($scheduleMode->save()){
+            echo 'true';
+        }
+
+        echo 'false';
     }
 
     /**according to the condition to get many schedule;
@@ -59,10 +100,11 @@ class ScheduleController extends Controller
         $condition = array();
         $data = $this->getManySchedule($condition);
         $style='';
-        //provide many kind of dispaly style
+        //provide many kind of dispaly style.
         $tempalte='';
         return view($tempalte, ['data' => $data]);
     }
+
 
 
     /**
