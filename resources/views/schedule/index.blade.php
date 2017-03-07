@@ -155,11 +155,10 @@
 
 <!-- Page specific script -->
 <script>
+
     $(function () {
-        var dada=new Date(y, m, d, h, min, sec, ms);
-        var ttttt=dada.getDate();
-     console.log(ttttt);
-       // console.log(new Date(y,m,d-5));
+
+
         /* initialize the external events
          -----------------------------------------------------------------*/
         function ini_events(ele) {
@@ -318,16 +317,6 @@
             ],
 
             eventClick: function(event) {
-                /*动态进行添加日程数据的添加*/
-                var ar=[{
-                    title: 'Meeting-two',
-                    start: new Date(y, m, d, 11, 30),
-                    allDay: false,
-                    backgroundColor: "#0073b7", //Blue
-                    borderColor: "#0073b7" //Blue
-                }];
-                $('#calendar').fullCalendar("addEventSource",ar);
-
 
                 /*
                 * <a class="fc-day-grid-event fc-event fc-start fc-end fc-draggable"
@@ -340,9 +329,10 @@
                 * */
 
                 var _that=$(this);
-               // console.log($(this).find("span.fc-title").html());
-               // console.log($(this).find("span.fc-time").html());
-               // console.log(event);
+                //console.log($(this).find("span.fc-title").html());
+                //console.log($(this).find("span.fc-time").html());
+                //console.log(event);
+                //console.log(_that);
 
                 var text=event.title;
                 var backgroundColor=event.backgroundColor;
@@ -353,6 +343,7 @@
                 layui.use('layer', function(){
                     var layer = layui.layer;
                     window.wmr=_that;
+                    window.calendarEvent=event;
                    var colorChoose='<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#00c0ef;background-color:#00c0ef;width: 20px;height: 20px;"></button>' +
                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#0073b7;background-color:#0073b7;width: 20px;height: 20px;"></button>' +
                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#3c8dbc;background-color:#3c8dbc;width: 20px;height: 20px;"></button>' +
@@ -382,17 +373,30 @@
                         ,shade: 0.6     //遮罩透明度
                         ,maxmin: true  //允许全屏最小化
                         ,anim: 1       //0-6的动画形式，-1不开启
-                        ,content: '<input class="planContent" value="sss">' +
+                        ,content: '<input class="planContent" value="sss" xmlns="http://www.w3.org/1999/html">' +
                         '<input hidden class="layui-input" placeholder="日期" ' +
                         'onclick="layui.laydate({elem: this, istime: true, format:'+ "'"+'YYYY-MM-DD hh:mm:ss'+"'"+'})">' +
                         '<a class="modify layui-layer-close layui-layer-close1" href="javascript:;">添加</a>'+colorChoose+preview+
                         '<script>$(".colorRender").on("click",function() {var color=$(this).css("background-color");' +
                         'var inputValue=$(".planContent").val();$(".title").html(inputValue);' +
                         '$(".title").css("background-color",color);$(".title").css("border-color",color);});' +
-                        '$(".modify").on("click",function() {var modifyContent=$(".planContent").val();' +
-                        'var time=$(".layui-input").val();window.wmr.find("span.fc-title").html(modifyContent)});' +
+                        '$(".modify").on("click",function() {var modifyContent=$(".planContent").val();window.calendarEvent.title=modifyContent;$("#calendar").fullCalendar( "updateEvent", window.calendarEvent);' +
                         '<\/script>',
                     });
+                });
+
+                $.ajax({
+                    url: 'index.php',
+                    type: 'POST',
+                    data: {destination: data.node.key, node: data.otherNode.key },
+                    dataType: 'json',
+                    cache:false,
+                    async:true,
+                    timeout:1000,
+                    beforeSend:function () {},
+                    complete:'',
+                    success:function (data) {},
+                    error:function (data) {},
                 });
 
                 if (event.url) {
@@ -400,6 +404,7 @@
                     window.open(event.url);
                     return false;
                 }
+
             },
 
             eventMouseover: function(event) {
@@ -445,6 +450,7 @@
             eventResizeStart:function( event, jsEvent, ui, view ) {
                // alert('eventResizeStart');
             },
+
             eventResizeStop:function( event, jsEvent, ui, view ) {
                 /*获取移动前的开始时间和结束时间*/
                console.log('eventResizeStop');
@@ -464,6 +470,7 @@
                 console.log('this is endTime'+endTime);
                // alert('eventResizeStop');
             },
+
             eventResize:function( event, delta, revertFunc, jsEvent, ui, view ) {
                 /*获取移动后的开始时间和结束时间*/
                 console.log(event);
@@ -475,9 +482,11 @@
                 console.log('eventResize');
                // alert('eventResize');
             },
+
             eventReceive:function( event ) {
                // alert('fdfsd');
             },
+
             editable: true,
             droppable: true, // this allows things to be dropped onto the calendar !!!
             drop: function (date, allDay) { // this function is called when something is dropped
@@ -509,6 +518,26 @@
 
             }
         });
+
+        /*获取后台数据*/
+        var eventsData= {!! $eventsData !!};
+        console.log(eventsData);
+        var ar=[{
+            title: 'Meeting-two',
+            start: new Date(y, m, d, 11, 30),
+            allDay: false,
+            backgroundColor: "#0073b7", //Blue
+            borderColor: "#0073b7" //Blue
+        }];
+        /*动态进行添加日程数据的添加,后边修改内容就不行了*/
+        var arr=new Array();
+        for(var o in eventsData){
+            arr={title:eventsData[o]['title'],start:new Date(y, m, d, 11, 30),backgroundColor:"#0073b7",borderColor:"#0073b7",allDay:false};
+            ar.push(arr);
+            //console.log(eventsData[o]['a']);
+        }
+        console.log(ar);
+        $('#calendar').fullCalendar("addEventSource",ar);
 
 
 

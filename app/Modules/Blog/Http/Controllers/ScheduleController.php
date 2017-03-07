@@ -18,7 +18,9 @@ use League\Flysystem\Exception;
 class ScheduleController extends Controller
 {
     public function schedule(){
-        return view('schedule.index');
+        $arr[]=array('title'=>'sdd','start'=>'fdfdf');
+
+        return view('schedule.index',['eventsData'=>json_encode($arr)]);
     }
 
     /**
