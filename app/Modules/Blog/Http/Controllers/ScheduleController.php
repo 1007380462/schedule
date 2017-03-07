@@ -17,8 +17,18 @@ use League\Flysystem\Exception;
 
 class ScheduleController extends Controller
 {
+
     public function schedule(){
-        $arr[]=array('title'=>'sdd','start'=>'fdfdf');
+        /*get many element from table according to condition*/
+
+        $arr[]=array(
+            'title'=>'sdd',
+            'start'=>array(2017,2,7,0,0,0), //y-m-d h-m-s attention js month starting  from zero so Date(2017,2,7) is 2017-3-7 in javascript
+            'end'=>array(2017,2,7,11,0,0),
+            'allDay'=>false,
+            'backgroundColor'=>'#3c8dbc',
+            'borderColor'=>'#3c8dbc',
+        );
 
         return view('schedule.index',['eventsData'=>json_encode($arr)]);
     }

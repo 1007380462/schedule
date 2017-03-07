@@ -532,7 +532,17 @@
         /*动态进行添加日程数据的添加,后边修改内容就不行了*/
         var arr=new Array();
         for(var o in eventsData){
-            arr={title:eventsData[o]['title'],start:new Date(y, m, d, 11, 30),backgroundColor:"#0073b7",borderColor:"#0073b7",allDay:false};
+            console.log(eventsData[o]['start']);
+            var startTime=eventsData[o]['start'];
+            var endTime=eventsData[o]['end'];
+            arr={
+                title:eventsData[o]['title'],
+                start:new Date(startTime[0],startTime[1],startTime[2],startTime[3],startTime[4],startTime[5]),
+                end:  new Date(endTime[0],endTime[1],endTime[2],endTime[3],endTime[4],endTime[5]),
+                backgroundColor:eventsData[o]['backgroundColor'],
+                borderColor:eventsData[o]['borderColor'],
+                allDay:false
+            };
             ar.push(arr);
             //console.log(eventsData[o]['a']);
         }
