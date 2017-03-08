@@ -157,8 +157,6 @@
 <script>
 
     $(function () {
-
-
         /* initialize the external events
          -----------------------------------------------------------------*/
         function ini_events(ele) {
@@ -270,34 +268,34 @@
             },
             //Random default events
             events: [
-                {
+                /*{
                     title: 'All Day Event',
                     start: new Date(y, m, 1),
                     backgroundColor: "#f56954", //red
                     borderColor: "#f56954" //red
-                },
-                {
+                },*/
+                /*{
                     title: 'Long Event',
                     start: new Date(y, m, d - 5),
                     end: new Date(y, m, d - 2),
                     backgroundColor: "#f39c12", //yellow
                     borderColor: "#f39c12" //yellow
-                },
-                {
+                },*/
+                /*{
                     title: 'Meeting',
                     start: new Date(y, m, d, 10, 30),
                     allDay: false,
                     backgroundColor: "#0073b7", //Blue
                     borderColor: "#0073b7" //Blue
-                },
-                {
+                },*/
+                /*{
                     title: 'Lunch',
                     start: new Date(y, m, d, 12, 0),
                     end: new Date(y, m, d, 14, 0),
                     allDay: false,
                     backgroundColor: "#00c0ef", //Info (aqua)
                     borderColor: "#00c0ef" //Info (aqua)
-                },
+                },*/
                 {
                     title: 'Birthday Party',
                     start: new Date(y, m, d + 1, 19, 0),
@@ -306,14 +304,14 @@
                     backgroundColor: "#00a65a", //Success (green)
                     borderColor: "#00a65a" //Success (green)
                 },
-                {
+              /*  {
                     title: 'Click for Google',
                     start: new Date(y, m, 28),
                     end: new Date(y, m, 29),
                   //url: 'http://google.com/',
                     backgroundColor: "#3c8dbc", //Primary (light-blue)
                     borderColor: "#3c8dbc" //Primary (light-blue)
-                }
+                }*/
             ],
 
             eventClick: function(event) {
@@ -400,7 +398,7 @@
                         ' timeout:1000,' +
                         ' beforeSend:function () {},' +
                         ' complete:"", ' +
-                        ' success:function (data) {if(data==true){window.calendarEvent.title=modifyContent;$("#calendar").fullCalendar("updateEvent", window.calendarEvent);}},' +
+                        ' success:function (data) {if(data.code==00000){window.calendarEvent.title=modifyContent;$("#calendar").fullCalendar("updateEvent", window.calendarEvent);}},' +
                         ' error:function (data) {},' +
                         '});' +
                         '});' +
@@ -513,33 +511,65 @@
 
             editable: true,
             droppable: true, // this allows things to be dropped onto the calendar !!!
-            drop: function (date, allDay) { // this function is called when something is dropped
-                console.log(this);
-                console.log(date);
-                console.log(allDay);
+            drop: function (date, allDay) {
+                // this function is called when something is dropped
+                //console.log(this);
+               // console.log(date);
+               // console.log(allDay);
                // alert('drop');
-                // retrieve the dropped element's stored Event Object
-                var originalEventObject = $(this).data('eventObject');
 
-                // we need to copy it, so that multiple events don't have a reference to the same object
-                var copiedEventObject = $.extend({}, originalEventObject);
 
-                // assign it the date that was reported
-                copiedEventObject.start = date;
-                copiedEventObject.allDay = allDay;
-                copiedEventObject.backgroundColor = $(this).css("background-color");
-                copiedEventObject.borderColor = $(this).css("border-color");
+                var startTime=date.format('YYYY-MM-DD hh:mm:ss');
+                //console.log(startTime);
+                var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration')); // get the default and convert it to proper type
+                var end = date.clone().add(defaultDuration); // If there is no end, compute it，默认时间区间是两小时
+                //console.log(end.format('YYYY-MM-DD hh:mm:ss'));
+                var endTime=end.format('YYYY-MM-DD hh:mm:ss');
 
-                // render the event on the calendar
-                // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-                $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
 
-                // is the "remove after drop" checkbox checked?
-                if ($('#drop-remove').is(':checked')) {
-                    // if so, remove the element from the "Draggable Events" list
-                    $(this).remove();
-                }
+                var backgroundColor=$(this).css("background-color");
+                var borderColor=$(this).css("border-color");
+               // console.log(backgroundColor);
+               // console.log(borderColor);
 
+                var _that=this;
+                $.ajax({
+                    url: "addSchedule",
+                    type: "POST",
+                    data: {content:'',backgroundColor: backgroundColor, borderColor: borderColor,startTime:startTime,endTime:endTime},
+                    dataType: "json",
+                    cache:false,
+                    async:true,
+                    timeout:1000,
+                    beforeSend:function () {},
+                    complete:"",
+                    success:function (data) {
+                        // retrieve the dropped element's stored Event Object
+                        var originalEventObject = $(_that).data('eventObject');
+
+                        // we need to copy it, so that multiple events don't have a reference to the same object
+                        var copiedEventObject = $.extend({}, originalEventObject);
+
+                        // assign it the date that was reported
+                        copiedEventObject.start = date;
+                        copiedEventObject.allDay = allDay;
+                        copiedEventObject.backgroundColor = $(_that).css("background-color");
+                        copiedEventObject.borderColor = $(_that).css("border-color");
+
+                        // render the event on the calendar
+                        // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+                        $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+
+                        // is the "remove after drop" checkbox checked?
+                        if ($('#drop-remove').is(':checked')) {
+                            // if so, remove the element from the "Draggable Events" list
+                            $(_that).remove();
+                        }},
+                    error:function (data) {},
+                });
+
+
+                console.log('dd');
             }
         });
 
@@ -572,6 +602,146 @@
         }
         $('#calendar').fullCalendar("addEventSource",ar);
 
+        /*pre: get current time and to get data from back-end*/
+        $('.fc-prev-button').click(function() {
+            console.log($('.fc-center h2').html());
+            var currentTime=$('.fc-center h2').html();
+            $.ajax({
+                url: "modifyDuration",
+                type: "POST",
+                data: {duration:currentTime},
+                dataType: "json",
+                cache:false,
+                async:true,
+                timeout:1000,
+                beforeSend:function () {},
+                complete:"",
+                success:function (data) {
+                    //console.log(data);
+                    if(data.code==00000){
+                        var arr=new Array();
+                        var ar=[];
+                        var contentData=data.data.data;
+                        contentData=JSON.parse(contentData);
+                       // console.log(typeof contentData); console.log(contentData);
+                        for(var o in contentData){
+                            //console.log(contentData[o]['title']);
+                            var startTime=contentData[o]['start'];
+                            var endTime=contentData[o]['end'];
+                            arr={
+                                title:contentData[o]['title'],
+                                start:new Date(startTime[0],startTime[1],startTime[2],startTime[3],startTime[4],startTime[5]),
+                                end:  new Date(endTime[0],endTime[1],endTime[2],endTime[3],endTime[4],endTime[5]),
+                                backgroundColor:contentData[o]['backgroundColor'],
+                                borderColor:contentData[o]['borderColor'],
+                                allDay:false
+                            };
+                            /*event is set object of calendar page that had display*/
+                            $('#calendar').fullCalendar( 'removeEvents',function (event) {
+
+                                var startT=new Date(startTime[0],startTime[1]+1,startTime[2],startTime[3],startTime[4],startTime[5]);
+                                var startTT=startT.getFullYear()+'-'+startT.getMonth()+'-'+startT.getDate()+' '+startT.getHours()+':'+startT.getMinutes()+':'+startT.getSeconds();
+
+                                var endT=new Date(endTime[0],endTime[1]+1,endTime[2],endTime[3],endTime[4],endTime[5]);
+                                var endTT=endT.getFullYear()+'-'+endT.getMonth()+'-'+endT.getDate()+' '+endT.getHours()+':'+endT.getMinutes()+':'+endT.getSeconds();
+
+                                var start=event.start.format('YYYY-M-D h:m:s');
+
+                                var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration')); // get the default and convert it to proper type
+                                var end = event.end || event.start.clone().add(defaultDuration); // If there is no end, compute it，默认时间区间是两小时
+                                var ends=end.format('YYYY-M-D h:m:s');
+
+                                /*console.log('starTT'+startTT);
+                                console.log('start'+start);
+                                console.log('endTT'+endTT);
+                                console.log('end'+ends);
+                                console.log('eventtitle'+event.title);
+                                console.log('title'+contentData[o]['title']);*/
+
+                                if(startTT==start&&endTT==ends&&(contentData[o]['title']==event.title)){
+                                    return true;
+                                }
+                            });
+                            ar.push(arr);
+                        }
+                    }
+
+                    $('#calendar').fullCalendar( 'addEventSource', ar);
+                },
+                error:function (data) {},
+            });
+
+        });
+
+        /*next get current time and to get data from back-end*/
+        $('.fc-next-button').click(function() {
+            console.log($('.fc-center h2').html());
+            var currentTime=$('.fc-center h2').html();
+            $.ajax({
+                url: "modifyDuration",
+                type: "POST",
+                data: {duration:currentTime},
+                dataType: "json",
+                cache:false,
+                async:true,
+                timeout:1000,
+                beforeSend:function () {},
+                complete:"",
+                success:function (data) {
+                    //console.log(data);
+                    if(data.code==00000){
+                        var arr=new Array();
+                        var ar=[];
+                        var contentData=data.data.data;
+                        contentData=JSON.parse(contentData);
+                        // console.log(typeof contentData); console.log(contentData);
+                        for(var o in contentData){
+                            //console.log(contentData[o]['title']);
+                            var startTime=contentData[o]['start'];
+                            var endTime=contentData[o]['end'];
+                            arr={
+                                title:contentData[o]['title'],
+                                start:new Date(startTime[0],startTime[1],startTime[2],startTime[3],startTime[4],startTime[5]),
+                                end:  new Date(endTime[0],endTime[1],endTime[2],endTime[3],endTime[4],endTime[5]),
+                                backgroundColor:contentData[o]['backgroundColor'],
+                                borderColor:contentData[o]['borderColor'],
+                                allDay:false
+                            };
+                            /*event is set object of calendar page that had display*/
+                            $('#calendar').fullCalendar( 'removeEvents',function (event) {
+
+                                var startT=new Date(startTime[0],startTime[1]+1,startTime[2],startTime[3],startTime[4],startTime[5]);
+                                var startTT=startT.getFullYear()+'-'+startT.getMonth()+'-'+startT.getDate()+' '+startT.getHours()+':'+startT.getMinutes()+':'+startT.getSeconds();
+
+                                var endT=new Date(endTime[0],endTime[1]+1,endTime[2],endTime[3],endTime[4],endTime[5]);
+                                var endTT=endT.getFullYear()+'-'+endT.getMonth()+'-'+endT.getDate()+' '+endT.getHours()+':'+endT.getMinutes()+':'+endT.getSeconds();
+
+                                var start=event.start.format('YYYY-M-D h:m:s');
+
+                                var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration')); // get the default and convert it to proper type
+                                var end = event.end || event.start.clone().add(defaultDuration); // If there is no end, compute it，默认时间区间是两小时
+                                var ends=end.format('YYYY-M-D h:m:s');
+
+                                /*console.log('starTT'+startTT);
+                                 console.log('start'+start);
+                                 console.log('endTT'+endTT);
+                                 console.log('end'+ends);
+                                 console.log('eventtitle'+event.title);
+                                 console.log('title'+contentData[o]['title']);*/
+
+                                if(startTT==start&&endTT==ends&&(contentData[o]['title']==event.title)){
+                                    return true;
+                                }
+                            });
+                            ar.push(arr);
+                        }
+                    }
+
+                    $('#calendar').fullCalendar( 'addEventSource', ar);
+                },
+                error:function (data) {},
+            });
+        });
 
 
         /* ADDING EVENTS */
@@ -606,6 +776,7 @@
             $("#new-event").val("");
         });
     });
+
 </script>
 
 

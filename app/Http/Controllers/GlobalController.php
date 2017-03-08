@@ -2,13 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 
 class GlobalController extends Controller
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+       // $this->middleware('auth');
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        echo 'sdsd';exit;
+        //in the early  The project does use file to store blog content instead of database
+        //user info stored in the cookie,user log in doesn't use session.
+        //$_COOKIE[''];
+        //setcookie('','');
+        //return view('home');
+    }
 
     public function echoOk(  $data = array(),   $msg = "", $code = "00000", $type = "json", $exit = true)
     {
@@ -34,10 +55,8 @@ class GlobalController extends Controller
         } else {
             $this->echoJsonp($data, $code, $msg);
         }
-        Yii::$app->end();
-        if ($exit) {
-            //$this->computeRunTime();
-        }
+       exit;
+
     }
 
 
@@ -83,5 +102,4 @@ class GlobalController extends Controller
         echo json_encode($data);
         return;
     }
-
 }
