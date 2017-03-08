@@ -26,4 +26,6 @@ Route::group(['prefix' => 'blog'], function () {
     Route::post('/adjustNodePlace','IndexController@adjustNodePlace');
 
     Route::get('/schedule','ScheduleController@schedule');
+    Route::post('/addSchedule','ScheduleController@addSchedule');
+    Route::post('/editSchedule','ScheduleController@editSchedule');
 });

@@ -334,6 +334,13 @@
                 //console.log(event);
                 //console.log(_that);
 
+                var startTime=event.start.format('YYYY-MM-DD hh:mm:ss');
+                console.log(startTime);
+                var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration')); // get the default and convert it to proper type
+                var end = event.end || event.start.clone().add(defaultDuration); // If there is no end, compute it，默认时间区间是两小时
+                console.log(end.format('YYYY-MM-DD hh:mm:ss'));
+                var endTime=end.format('YYYY-MM-DD hh:mm:ss');
+
                 var text=event.title;
                 var backgroundColor=event.backgroundColor;
                 var borderColor=event.borderColor;
@@ -344,6 +351,7 @@
                     var layer = layui.layer;
                     window.wmr=_that;
                     window.calendarEvent=event;
+
                    var colorChoose='<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#00c0ef;background-color:#00c0ef;width: 20px;height: 20px;"></button>' +
                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#0073b7;background-color:#0073b7;width: 20px;height: 20px;"></button>' +
                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#3c8dbc;background-color:#3c8dbc;width: 20px;height: 20px;"></button>' +
@@ -377,27 +385,43 @@
                         '<input hidden class="layui-input" placeholder="日期" ' +
                         'onclick="layui.laydate({elem: this, istime: true, format:'+ "'"+'YYYY-MM-DD hh:mm:ss'+"'"+'})">' +
                         '<a class="modify layui-layer-close layui-layer-close1" href="javascript:;">添加</a>'+colorChoose+preview+
-                        '<script>$(".colorRender").on("click",function() {var color=$(this).css("background-color");' +
+                        '<script>' +
+                        '$(".colorRender").on("click",function() {var color=$(this).css("background-color");' +
                         'var inputValue=$(".planContent").val();$(".title").html(inputValue);' +
                         '$(".title").css("background-color",color);$(".title").css("border-color",color);});' +
-                        '$(".modify").on("click",function() {var modifyContent=$(".planContent").val();window.calendarEvent.title=modifyContent;$("#calendar").fullCalendar( "updateEvent", window.calendarEvent);' +
+                        '$(".modify").on("click",function() {' +
+                        'var modifyContent=$(".planContent").val();' +
+                        '$.ajax({ url: "editSchedule",' +
+                        '  type: "POST",' +
+                        ' data: {content:modifyContent,backgroundColor: '+'"'+backgroundColor+'"'+', borderColor: '+'"'+borderColor+'"'+',startTime:'+'"'+startTime+'"'+',endTime:'+'"'+endTime+'"'+'},' +
+                        ' dataType: "json", ' +
+                        ' cache:false,' +
+                        ' async:true,' +
+                        ' timeout:1000,' +
+                        ' beforeSend:function () {},' +
+                        ' complete:"", ' +
+                        ' success:function (data) {if(data==true){window.calendarEvent.title=modifyContent;$("#calendar").fullCalendar("updateEvent", window.calendarEvent);}},' +
+                        ' error:function (data) {},' +
+                        '});' +
+                        '});' +
                         '<\/script>',
                     });
                 });
 
                 $.ajax({
-                    url: 'index.php',
-                    type: 'POST',
+                    url: "index.php",
+                    type: "POST",
                     data: {destination: data.node.key, node: data.otherNode.key },
-                    dataType: 'json',
+                    dataType: "json",
                     cache:false,
                     async:true,
                     timeout:1000,
                     beforeSend:function () {},
-                    complete:'',
+                    complete:"",
                     success:function (data) {},
                     error:function (data) {},
                 });
+
 
                 if (event.url) {
                     return false;
@@ -453,11 +477,11 @@
 
             eventResizeStop:function( event, jsEvent, ui, view ) {
                 /*获取移动前的开始时间和结束时间*/
-               console.log('eventResizeStop');
-                console.log(event);
-                console.log(event.start);
+               //console.log('eventResizeStop');
+                //console.log(event);
+               // console.log(event.start);
                 var startTime=moment(event.start["_d"]).format('YYYY-MM-DD hh:mm:ss');
-                console.log('this is starttime'+startTime);
+               // console.log('this is starttime'+startTime);
                 //event.end || event.start.clone().add(defaultDuration);
                 var endTime='';  //移动之前的结束时间
                 if(event.end==null){
@@ -521,7 +545,7 @@
 
         /*获取后台数据*/
         var eventsData= {!! $eventsData !!};
-        console.log(eventsData);
+        //console.log(eventsData);
         var ar=[{
             title: 'Meeting-two',
             start: new Date(y, m, d, 11, 30),
@@ -546,7 +570,6 @@
             ar.push(arr);
             //console.log(eventsData[o]['a']);
         }
-        console.log(ar);
         $('#calendar').fullCalendar("addEventSource",ar);
 
 

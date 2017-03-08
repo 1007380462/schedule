@@ -81,20 +81,22 @@ class ScheduleController extends Controller
         $backgroundColor=$request['backgroundColor'];
         $borderColor=$request['borderColor'];
         $content=$request['content'];
-        $arr=['backgroundColor'=>$backgroundColor,'borderColor'=>$borderColor];
-        $arrJSoned=json_encode($arr);
-        $id=$request['id'];
-        $scheduleMode=Schedule::find($id);
-        $scheduleMode->startTime=$startTime;
-        $scheduleMode->endTime=$endTime;
-        $scheduleMode->content=$content;
-        $scheduleMode->ext=$arrJSoned;
 
-        if($scheduleMode->save()){
-            echo 'true';
+        $scheduleMode=Schedule::where('startTime',$startTime)
+                        ->where('endTime',$endTime)
+                        ->where('backgroundColor',$backgroundColor)
+                        ->where('borderColor',$borderColor)
+                        ->first();
+        if(empty($scheduleMode)){
+            echo 'false';exit;
         }
 
-        echo 'false';
+        $scheduleMode->content=$content;
+        if($scheduleMode->save()){
+            echo 'true';exit;
+        }
+
+        echo 'false';exit;
     }
 
     /**according to the condition to get many schedule;
