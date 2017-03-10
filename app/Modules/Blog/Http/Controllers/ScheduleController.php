@@ -73,6 +73,9 @@ class ScheduleController extends GlobalController
                 $p = (string)$a % 16;
                 if ($g == 0) {
                     $result = $hex[$p] . $result;
+                    if(strlen($result)==1){
+                        $result='0'.$result;
+                    }
                     $endResult .= $result;
                     break;
                 } else {
@@ -118,12 +121,12 @@ class ScheduleController extends GlobalController
     }
 
     /**
-     * get data by modify duration
+     * get data by modify duration,use pre and next button
      * @param Request $request
      */
     public function modifyDuration(Request $request){
         $duratioin=$request['duration'];
-        /*for example duration*/
+        /*for example duration,use pre and next button to send request*/
         /*week model:  Oct 16 — 22, 2016 */
         /*day model: October 16, 2016 date("Y",strtotime(''))*/
         /*month model: October 2016  date("Y",strtotime(''))*/
@@ -175,16 +178,69 @@ class ScheduleController extends GlobalController
 
         $this->echoOk(['data'=>json_encode($arr)]);
     }
+
+    /**
+     * drag event and move drag
+     * @param Request $request
+     */
+    public function moveEvent(Request $request){
+        $startTime=$request['startTime'];
+        $endTime=$request['endTime'];
+
+        $oldstartTime=$request['oldStartTime'];
+        $oldendTime=$request['oldEndTime'];
+
+        $oldContent=$request['oldTitle'];
+
+        if(substr($request['backgroundColor'],0,1)=='#'){
+            $backgroundColor=$request['backgroundColor'];
+        }else{
+            $backgroundColor=$this->RGBToHex($request['backgroundColor']);
+        }
+
+
+        $scheduleMode=Schedule::where('startTime',$oldstartTime)
+            ->where('endTime',$oldendTime)
+            ->where('backgroundColor',$backgroundColor)
+            ->where('content',$oldContent)
+            ->first();
+        if(empty($scheduleMode)){
+            $this->echoErr([]);
+        }
+
+        $scheduleMode->startTime=$startTime;
+        $scheduleMode->endTime=$endTime;
+        $scheduleMode->backgroundColor=$backgroundColor;
+        if($scheduleMode->save()){
+            $this->echoOk();
+        }
+
+        $this->echoErr([]);
+    }
+
     /**
      * remove a strip of schedule
      * @param Request $request
      */
     public function removeSchedule(Request $request){
-        $id=$request['id'];
-        if(Schedule::where('id',$id)->delete()){
-            $this->echoOk();
+        $content=$request['content'];
+        $startTime=$request['startTime'];
+        $endTime=$request['endTime'];
+        if(substr($request['backgroundColor'],0,1)=='#'){
+            $backgroundColor=$request['backgroundColor'];
+        }else{
+            $backgroundColor=$this->RGBToHex($request['backgroundColor']);
         }
-        $this->echoErr([]);
+
+        $scheduleResult=Schedule::where('startTime',$startTime)
+            ->where('endTime',$endTime)
+            ->where('backgroundColor',$backgroundColor)
+            ->where('content',$content)
+            ->delete();
+         if($scheduleResult){
+             $this->echoOk();
+         }
+        $this->echoErr();
     }
 
     /**
@@ -194,14 +250,22 @@ class ScheduleController extends GlobalController
     public function editSchedule(Request $request){
         $startTime=$request['startTime'];
         $endTime=$request['endTime'];
-        $backgroundColor=$this->RGBToHex($request['backgroundColor']);
-        $borderColor=$this->RGBToHex($request['borderColor']);
+        if(substr($request['backgroundColor'],0,1)=='#'){
+            $backgroundColor=$request['backgroundColor'];
+            $borderColor=$request['borderColor'];
+        }else{
+            $backgroundColor=$this->RGBToHex($request['backgroundColor']);
+            $borderColor=$this->RGBToHex($request['borderColor']);
+        }
+
         $content=$request['content'];
+        $oldContent=$request['oldContent'];
 
         $scheduleMode=Schedule::where('startTime',$startTime)
                         ->where('endTime',$endTime)
                         ->where('backgroundColor',$backgroundColor)
                         ->where('borderColor',$borderColor)
+                        ->where('content',$oldContent)
                         ->first();
         if(empty($scheduleMode)){
             $this->echoErr([]);

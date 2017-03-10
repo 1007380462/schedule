@@ -296,14 +296,14 @@
                     backgroundColor: "#00c0ef", //Info (aqua)
                     borderColor: "#00c0ef" //Info (aqua)
                 },*/
-                {
+                /*{
                     title: 'Birthday Party',
                     start: new Date(y, m, d + 1, 19, 0),
                     end: new Date(y, m, d + 1, 22, 30),
                     allDay: false,
                     backgroundColor: "#00a65a", //Success (green)
                     borderColor: "#00a65a" //Success (green)
-                },
+                },*/
               /*  {
                     title: 'Click for Google',
                     start: new Date(y, m, 28),
@@ -315,6 +315,27 @@
             ],
 
             eventClick: function(event) {
+
+                /*remove event*/
+                window.clickEvent=event;
+                var clickEvent=event;
+                var clickEventStart=clickEvent.start.format("YYYY-M-D h:m:s");
+                var defaultDuration = moment.duration($("#calendar").fullCalendar("option", "defaultTimedEventDuration")); // get the default and convert it to proper type
+                var clickEventEnd = clickEvent.end || clickEvent.start.clone().add(defaultDuration); // If there is no end, compute it，默认时间区间是两小时
+                 clickEventEnd=clickEventEnd.format("YYYY-M-D h:m:s");
+                var clickEventTitle=clickEvent.title;
+                var clickBackgroundcolor=clickEvent.backgroundColor;
+                console.log('this is clickgroundcolor'+clickBackgroundcolor);
+                $("#calendar").fullCalendar( "removeEvents",function (event) {
+                    var start=event.start.format("YYYY-M-D h:m:s");
+                    var defaultDuration = moment.duration($("#calendar").fullCalendar("option", "defaultTimedEventDuration")); // get the default and convert it to proper type
+                    var end = event.end || event.start.clone().add(defaultDuration); // If there is no end, compute it，默认时间区间是两小时
+                    end=end.format("YYYY-M-D h:m:s");
+                    if(clickEventStart==start&&clickEventEnd==end&&(clickEventTitle==event.title)){
+                        return false;
+                    }
+                });
+
 
                 /*
                 * <a class="fc-day-grid-event fc-event fc-start fc-end fc-draggable"
@@ -333,10 +354,9 @@
                 //console.log(_that);
 
                 var startTime=event.start.format('YYYY-MM-DD hh:mm:ss');
-                console.log(startTime);
                 var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration')); // get the default and convert it to proper type
                 var end = event.end || event.start.clone().add(defaultDuration); // If there is no end, compute it，默认时间区间是两小时
-                console.log(end.format('YYYY-MM-DD hh:mm:ss'));
+               // console.log(end.format('YYYY-MM-DD hh:mm:ss'));
                 var endTime=end.format('YYYY-MM-DD hh:mm:ss');
 
                 var text=event.title;
@@ -349,8 +369,8 @@
                     var layer = layui.layer;
                     window.wmr=_that;
                     window.calendarEvent=event;
-
-                   var colorChoose='<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#00c0ef;background-color:#00c0ef;width: 20px;height: 20px;"></button>' +
+                    window.boolValue=false;
+                   /* var colorChoose='<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#00c0ef;background-color:#00c0ef;width: 20px;height: 20px;"></button>' +
                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#0073b7;background-color:#0073b7;width: 20px;height: 20px;"></button>' +
                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#3c8dbc;background-color:#3c8dbc;width: 20px;height: 20px;"></button>' +
                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#39cccc;background-color:#39cccc;width: 20px;height: 20px;"></button>' +
@@ -362,15 +382,15 @@
                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#605ca8;background-color:#605ca8;width: 20px;height: 20px;"></button>' +
                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#f012be;background-color:#f012be;width: 20px;height: 20px;"></button>' +
                            '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#777;background-color:#777;width: 20px;height: 20px;"></button>' +
-                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#001f3f;background-color:#001f3f;width: 20px;height: 20px;"></button>';
-                    colorChoose='';
+                           '<button type="button" class="colorRender btn btn-default" style="margin-right: 3px;margin-left: 3px;border-color:#001f3f;background-color:#001f3f;width: 20px;height: 20px;"></button>';*/
+                   var colorChoose='';
 
-                    var preview='<a class="">' +
+                    /*var preview='<a class="">' +
                             '<div class="content" >' +
                             '<span hidden class="time" style="color: #fff;border-color:#00c0ef;background-color:#00c0ef;">12a</span>' +
                             '<span class="title" style="color: #fff;border-color:#00c0ef;background-color:#00c0ef;">All Day Event</span>' +
-                            '</div></a>';
-                        preview='';
+                            '</div></a>';*/
+                    var  preview='';
 
                     layer.open({
                         type: 1    //Page层类型
@@ -379,19 +399,22 @@
                         ,shade: 0.6     //遮罩透明度
                         ,maxmin: true  //允许全屏最小化
                         ,anim: 1       //0-6的动画形式，-1不开启
-                        ,content: '<input class="planContent" value="sss" xmlns="http://www.w3.org/1999/html">' +
+                        ,content: '<input class="planContent" value='+'"'+text+'"'+' xmlns="http://www.w3.org/1999/html">' +
+                        '<input hidden class="oldContent" value='+'"'+text+'"'+'>' +
                         '<input hidden class="layui-input" placeholder="日期" ' +
                         'onclick="layui.laydate({elem: this, istime: true, format:'+ "'"+'YYYY-MM-DD hh:mm:ss'+"'"+'})">' +
                         '<a class="modify layui-layer-close layui-layer-close1" href="javascript:;">添加</a>'+colorChoose+preview+
+                        '<div><a class="deleteEvent layui-layer-close" href="javascript:;">删除</a></div>' +
                         '<script>' +
                         '$(".colorRender").on("click",function() {var color=$(this).css("background-color");' +
                         'var inputValue=$(".planContent").val();$(".title").html(inputValue);' +
                         '$(".title").css("background-color",color);$(".title").css("border-color",color);});' +
                         '$(".modify").on("click",function() {' +
                         'var modifyContent=$(".planContent").val();' +
+                        'var oldContent=$(".oldContent").val();' +
                         '$.ajax({ url: "editSchedule",' +
                         '  type: "POST",' +
-                        ' data: {content:modifyContent,backgroundColor: '+'"'+backgroundColor+'"'+', borderColor: '+'"'+borderColor+'"'+',startTime:'+'"'+startTime+'"'+',endTime:'+'"'+endTime+'"'+'},' +
+                        ' data: {oldContent:oldContent,content:modifyContent,backgroundColor: '+'"'+backgroundColor+'"'+', borderColor: '+'"'+borderColor+'"'+',startTime:'+'"'+startTime+'"'+',endTime:'+'"'+endTime+'"'+'},' +
                         ' dataType: "json", ' +
                         ' cache:false,' +
                         ' async:true,' +
@@ -402,6 +425,36 @@
                         ' error:function (data) {},' +
                         '});' +
                         '});' +
+                        '$(".deleteEvent").on("click",function() {' +
+                        ' var clickEventStart=window.clickEvent.start.format("YYYY-M-D h:m:s");' +
+                        ' var defaultDuration = moment.duration($("#calendar").fullCalendar("option", "defaultTimedEventDuration"));' +
+                        ' var clickEventEnd = window.clickEvent.end || window.clickEvent.start.clone().add(defaultDuration);' +
+                        ' clickEventEnd=clickEventEnd.format("YYYY-M-D h:m:s");' +
+                        ' var clickEventTitle=window.clickEvent.title;' +
+                        ' var clickBackgroundcolor=window.clickEvent.backgroundColor;' +
+                        ' $("#calendar").fullCalendar( "removeEvents",function (event) {' +
+                        ' var start=event.start.format("YYYY-M-D h:m:s");' +
+                        ' var defaultDuration = moment.duration($("#calendar").fullCalendar("option", "defaultTimedEventDuration"));' +
+                        ' var end = event.end || event.start.clone().add(defaultDuration);' +
+                        ' end=end.format("YYYY-M-D h:m:s");' +
+                        ' var backgroundcolor=event.backgroundColor;' +
+                        ' var oldContent=$(".oldContent").val();' +
+                        ' if(backgroundcolor==clickBackgroundcolor&&clickEventStart==start&&clickEventEnd==end&&(clickEventTitle==event.title)){' +
+                        ' /*ajax request deleteEvent*/' +
+                        ' $.ajax({' +
+                        ' url: "removeSchedule", ' +
+                        ' type: "POST",' +
+                        ' data: {content:oldContent, startTime:start, endTime:end,backgroundColor:backgroundcolor},' +
+                        ' dataType: "json",' +
+                        ' cache:false,' +
+                        ' async:false,' +
+                        ' timeout:1000,' +
+                        ' success:function (data) {window.booValue=false;if(data.code==00000){window.boolValue=true;}}, ' +
+                        ' error:function (data) {},});' +
+                        ' return window.boolValue;' +
+                        ' }' +
+                        ' });' +
+                        '})' +
                         '<\/script>',
                     });
                 });
@@ -420,7 +473,6 @@
                     error:function (data) {},
                 });
 
-
                 if (event.url) {
                     return false;
                     window.open(event.url);
@@ -432,7 +484,6 @@
             eventMouseover: function(event) {
                 // alert('eventMouseover');
                 if (event.url) {
-                  //  alert(event.url);return false;
                     window.open(event.url);
                     return false;
                 }
@@ -441,32 +492,59 @@
             eventMouseout: function(event) {
                 // alert('eventMouseout');
                 if (event.url) {
-                  //  alert(event.url);return false;
                     window.open(event.url);
                     return false;
                 }
             },
 
             eventDragStart:function( event, jsEvent, ui, view ) {
-                console.log('this is event drag start');
-                console.log(event);
-                //alert('eventDragStart');
+               // console.log('this is event drag start');
+                window.eventDragStartStartTime=event.start.format('YYYY-MM-DD hh:mm:ss');
+                var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration'));
+                var end = event.end || event.start.clone().add(defaultDuration);
+                window.eventDragStartEndTime=end.format('YYYY-MM-DD hh:mm:ss');
+                window.eventDragStartTitle=event.title;
             },
 
             eventDragStop:function( event, jsEvent, ui, view ) {
-                console.log(event);
-                console.log('this is drag stop');
-                //alert('eventDragStop');
+                startTime=event.start.format('YYYY-MM-DD hh:mm:ss');
+                var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration'));
+                var end = event.end || event.start.clone().add(defaultDuration);
+                var endTime=end.format('YYYY-MM-DD hh:mm:ss');
+
             },
 
             eventDrop:function( event, delta, revertFunc, jsEvent, ui, view ) {
-                //console.log(event.start.format('YYYY-MM-DD hh:mm:ss'));
+               // console.log('eventDrop'+event.start.format('YYYY-MM-DD hh:mm:ss'));
                 var startTime=event.start.format('YYYY-MM-DD hh:mm:ss');
-                var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration')); // get the default and convert it to proper type
-                var end = event.end || event.start.clone().add(defaultDuration); // If there is no end, compute it，默认时间区间是两小时
-                //console.log('end is ' + end.format('YYYY-MM-DD hh:mm:ss'));
+                var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration'));
+                var end = event.end || event.start.clone().add(defaultDuration); //默认时间区间是两小时
                 var endTime=end.format('YYYY-MM-DD hh:mm:ss');
-                //alert('eventDrop');
+
+                var fg=true;
+                /*move event*/
+                $.ajax({
+                    url: "moveEvent",
+                    type: "POST",
+                    data: {oldTitle:window.eventDragStartTitle,oldStartTime: window.eventDragStartStartTime, oldEndTime:window.eventDragStartEndTime,startTime:startTime,endTime:endTime,backgroundColor:event.backgroundColor },
+                    dataType: "json",
+                    cache:false,
+                    async:false,
+                    timeout:1000,
+                    beforeSend:function () {},
+                    complete:"",
+                    success:function (data) {
+                        if(data.code==00000){
+                            fg=false;
+                        }else{
+                            fg=true;
+                        }},
+                    error:function (data) {},
+                });
+                if(fg) {
+                    abort();
+                }
+
             },
 
             eventResizeStart:function( event, jsEvent, ui, view ) {
@@ -476,11 +554,7 @@
             eventResizeStop:function( event, jsEvent, ui, view ) {
                 /*获取移动前的开始时间和结束时间*/
                //console.log('eventResizeStop');
-                //console.log(event);
-               // console.log(event.start);
                 var startTime=moment(event.start["_d"]).format('YYYY-MM-DD hh:mm:ss');
-               // console.log('this is starttime'+startTime);
-                //event.end || event.start.clone().add(defaultDuration);
                 var endTime='';  //移动之前的结束时间
                 if(event.end==null){
                     //var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration'));
@@ -490,7 +564,6 @@
                     endTime=moment(event.end["_d"]).format('YYYY-MM-DD hh:mm:ss');
                 }
                 console.log('this is endTime'+endTime);
-               // alert('eventResizeStop');
             },
 
             eventResize:function( event, delta, revertFunc, jsEvent, ui, view ) {
@@ -502,7 +575,6 @@
                 console.log(endTime);
                 console.log(delta);
                 console.log('eventResize');
-               // alert('eventResize');
             },
 
             eventReceive:function( event ) {
@@ -513,24 +585,18 @@
             droppable: true, // this allows things to be dropped onto the calendar !!!
             drop: function (date, allDay) {
                 // this function is called when something is dropped
-                //console.log(this);
-               // console.log(date);
-               // console.log(allDay);
                // alert('drop');
-
 
                 var startTime=date.format('YYYY-MM-DD hh:mm:ss');
                 //console.log(startTime);
-                var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration')); // get the default and convert it to proper type
-                var end = date.clone().add(defaultDuration); // If there is no end, compute it，默认时间区间是两小时
+                var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration'));
+                var end = date.clone().add(defaultDuration);
                 //console.log(end.format('YYYY-MM-DD hh:mm:ss'));
                 var endTime=end.format('YYYY-MM-DD hh:mm:ss');
 
 
                 var backgroundColor=$(this).css("background-color");
                 var borderColor=$(this).css("border-color");
-               // console.log(backgroundColor);
-               // console.log(borderColor);
 
                 var _that=this;
                 $.ajax({
@@ -568,25 +634,24 @@
                     error:function (data) {},
                 });
 
-
                 console.log('dd');
             }
         });
 
-        /*获取后台数据*/
+        /*get data from bakc-end*/
         var eventsData= {!! $eventsData !!};
-        //console.log(eventsData);
-        var ar=[{
+       /* var ar=[{
             title: 'Meeting-two',
             start: new Date(y, m, d, 11, 30),
             allDay: false,
             backgroundColor: "#0073b7", //Blue
             borderColor: "#0073b7" //Blue
-        }];
-        /*动态进行添加日程数据的添加,后边修改内容就不行了*/
+        }];*/
+       var ar=[];
+        /*dynamically add schedule data*/
         var arr=new Array();
         for(var o in eventsData){
-            console.log(eventsData[o]['start']);
+           // console.log(eventsData[o]['start']);
             var startTime=eventsData[o]['start'];
             var endTime=eventsData[o]['end'];
             arr={
@@ -598,7 +663,6 @@
                 allDay:false
             };
             ar.push(arr);
-            //console.log(eventsData[o]['a']);
         }
         $('#calendar').fullCalendar("addEventSource",ar);
 
